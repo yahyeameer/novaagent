@@ -7,7 +7,6 @@
 <meta name="description" content="NOVA is the governance layer that turns an AI agent runtime into something a business can be accountable for: real multi-tenancy, policy that refuses, write-ahead audit, human approval gates and a white-label Control Center.">
 <meta property="og:title" content="NOVA · The AI workforce, governed">
 <meta property="og:description" content="Deploy AI agents your compliance team can sign off on. Tenants, policy, audit and approvals, enforced inside the runtime.">
-<meta property="og:image" content="/img/cc-overview.webp">
 <meta name="theme-color" content="#070A16">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237DD3FC'/%3E%3Cstop offset='.5' stop-color='%23A78BFA'/%3E%3Cstop offset='1' stop-color='%23F0ABFC'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%23070A16'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='url(%23g)' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='6' fill='url(%23g)'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -198,8 +197,59 @@ section{padding:110px 0;position:relative}
 .tabs button{font:500 14px Inter;color:var(--muted);background:none;border:none;padding:9px 16px;border-radius:10px;cursor:pointer;transition:all .25s}
 .tabs button.on{background:rgba(255,255,255,.12);color:var(--ink)}
 .frame{padding:10px;border-radius:26px}
-.frame img{border-radius:18px;width:100%;aspect-ratio:1600/1111;object-fit:cover;object-position:top}
 .frame .cap{padding:14px 10px 4px;font-size:14px;color:var(--muted)}
+
+.app{display:grid;grid-template-columns:230px 1fr;border-radius:18px;overflow:hidden;background:rgba(8,11,24,.75);border:1px solid var(--stroke);min-height:560px;font-size:13.5px}
+.side{padding:18px 12px;border-right:1px solid var(--stroke);background:rgba(255,255,255,.02)}
+.org{display:flex;gap:10px;align-items:center;padding:0 6px 18px}
+.org .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#6366F1,#0EA5E9);font-weight:700}
+.org b{display:block;font-size:13.5px}.org small{color:var(--dim);font-size:11px}
+.side nav{display:grid;gap:2px}
+.side nav a{display:flex;justify-content:space-between;padding:8px 10px;border-radius:9px;color:var(--muted);cursor:default}
+.side nav a[data-nav]{cursor:pointer}
+.side nav a.on{background:rgba(255,255,255,.08);color:var(--ink);box-shadow:inset 2px 0 0 var(--violet)}
+.side nav i{font-style:normal;font-size:11px;padding:0 7px;border-radius:999px;background:rgba(255,255,255,.08)}
+.side nav i.am{background:rgba(251,191,36,.2);color:var(--amber)}
+.main{padding:22px;min-width:0}
+.scr{display:none;animation:fadeUp .4s ease both}.scr.show{display:block}
+.mh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:12px}
+.mh b{font-size:17px;display:block}.mh small{color:var(--dim)}
+.rt{display:flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;border:1px solid var(--stroke);font-size:12px;color:var(--muted);white-space:nowrap}
+.k4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.k4>div{padding:14px;border-radius:14px;border:1px solid var(--stroke);background:rgba(255,255,255,.03)}
+.k4 small{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.k4 b{display:block;font-size:28px;font-weight:700;margin:2px 0}.k4 span{font-size:12px;color:var(--muted)}
+.gr{color:var(--green)}.am{color:var(--amber)}
+.two{display:grid;grid-template-columns:1.6fr 1fr;gap:12px}
+.pnl{padding:16px;border-radius:14px;border:1px solid var(--stroke);background:rgba(255,255,255,.03)}
+.pnl h5{font-size:14.5px}.pnl .sub{color:var(--dim);font-size:12.5px;margin-bottom:12px}
+.agents{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ag{padding:12px;border-radius:12px;border:1px solid var(--stroke);background:rgba(0,0,0,.2)}
+.agh{display:flex;gap:9px;align-items:center;margin-bottom:10px}
+.agh b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}.agh small{color:var(--dim);font-size:11px}
+.ini{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;border:1px solid var(--stroke2);font-size:11px;font-weight:700;flex:none}
+.ag p{font-size:12.5px;color:var(--muted);margin:10px 0}
+.chs{display:flex;gap:6px;flex-wrap:wrap}
+.chs span{font-size:11px;padding:3px 8px;border-radius:7px;border:1px solid var(--stroke);color:var(--muted)}
+.chs span.ap{border-color:rgba(251,191,36,.35);color:var(--amber)}
+.hold{padding:12px;border-radius:12px;border:1px solid rgba(251,191,36,.3);background:rgba(251,191,36,.06);margin-bottom:12px}
+.hold b{font-size:13px;display:block}.hold small{color:var(--dim);font-size:11px}
+.acts{display:flex;gap:6px;margin-top:10px}
+.acts button{font:600 11.5px Inter;padding:6px 12px;border-radius:8px;border:none;background:var(--amber);color:#1a1300;cursor:pointer}
+.acts button.gh{background:rgba(255,255,255,.08);color:var(--ink)}
+.plat{display:grid;grid-template-columns:1fr auto;gap:7px;font-size:12.5px}.plat span{color:var(--dim)}
+.kb{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.col{padding:10px;border-radius:14px;background:rgba(255,255,255,.025);border:1px solid var(--stroke);min-height:380px}
+.col h6{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;padding:4px 4px 10px}
+.col h6 i{font-style:normal;color:var(--dim)}
+.tk{padding:11px;border-radius:11px;background:rgba(0,0,0,.25);border:1px solid var(--stroke);margin-bottom:8px;border-left:3px solid var(--dim)}
+.tk b{display:block;font-size:12.5px;font-weight:600}.tk small{color:var(--dim);font-size:11px}
+.tk.run{border-left-color:var(--sky)}.tk.hum{border-left-color:var(--amber)}.tk.dn{border-left-color:var(--green);opacity:.75}
+.banner{display:flex;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid rgba(125,211,252,.3);background:rgba(125,211,252,.07);color:#CFEFFF;margin-bottom:14px;font-size:13px}
+.autos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.au{padding:14px;border-radius:14px;border:1px solid var(--stroke);background:rgba(255,255,255,.03);display:grid;gap:10px}
+.auh{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.auh b{font-size:13.5px}
+.au p{font-size:12px;color:var(--sky)}.au small{color:var(--dim);font-size:11.5px}
 
 /* ladder */
 .ladder{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;margin-bottom:28px}
@@ -348,6 +398,8 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
   .flow::after{left:-3px !important;animation:travelY 2.4s linear infinite}
   .uses,.plans{grid-template-columns:1fr}
   .code{position:relative;top:0}
+  .app{grid-template-columns:1fr}.side{display:none}
+  .two{grid-template-columns:1fr}
   .nav ul{display:none}
   .burger{display:grid;place-items:center}
   .nav.open ul{display:flex;flex-direction:column;position:absolute;top:70px;left:16px;right:16px;padding:14px;border-radius:18px;background:rgba(10,14,30,.92);border:1px solid var(--stroke);backdrop-filter:blur(20px)}
@@ -368,6 +420,8 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
   .nav .cta .btn-ghost{display:none}
   footer .cols{grid-template-columns:1fr 1fr}
   .tbl{overflow-x:auto}
+  .k4,.kb,.autos,.agents{grid-template-columns:1fr 1fr}
+  .main{padding:14px}.col{min-height:0}
   .tbl table{min-width:620px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none !important;transition:none !important}.reveal{opacity:1;transform:none}}
@@ -413,7 +467,7 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
     <div>
       <span class="pill reveal"><span class="dot"></span><b>Now onboarding</b> design partners for 2027</span>
       <h1 class="reveal d1">The AI workforce,<br><span class="serif grad-text">governed.</span></h1>
-      <p class="lead reveal d2">NOVA turns an AI agent runtime into something your business can be accountable for. Tenants that can't see each other, policy the runtime itself refuses to break, a write‑ahead audit trail, human approval gates, and a Control Center you can hand to a customer.</p>
+      <p class="lead reveal d2">NOVA turns an AI agent runtime into something your business can be accountable for. Tenants that can't see each other, policy the runtime itself refuses to break, a write-ahead audit trail, human approval gates, and a Control Center you can hand to a customer.</p>
       <div class="ctas reveal d3">
         <a href="#contact" class="btn btn-primary" data-interest="demo">Book a live demo
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
@@ -500,7 +554,7 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
         </div>
         <div class="step reveal d2" data-step="2">
           <div class="num">3</div>
-          <div><h3>Compile into the runtime</h3><p>Each agent becomes an isolated runtime profile. Policy compiles into the fail‑closed <span class="mono">pre_tool_call</span> hook, so a denied tool is refused inside the agent process.</p><div class="bar"><i></i></div></div>
+          <div><h3>Compile into the runtime</h3><p>Each agent becomes an isolated runtime profile. Policy compiles into the fail-closed <span class="mono">pre_tool_call</span> hook, so a denied tool is refused inside the agent process.</p><div class="bar"><i></i></div></div>
         </div>
         <div class="step reveal d3" data-step="3">
           <div class="num">4</div>
@@ -574,8 +628,8 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
     <div class="bento">
       <div class="glass card span-3 wide reveal">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
-        <h3>Real multi‑tenancy</h3>
-        <p>Every task, run, event, comment and attachment carries a <code>tenant_id</code>, enforced in SQL at the store. Fair scheduling and per‑tenant concurrency caps stop one heavy customer from starving the rest.</p>
+        <h3>Real multi-tenancy</h3>
+        <p>Every task, run, event, comment and attachment carries a <code>tenant_id</code>, enforced in SQL at the store. Fair scheduling and per-tenant concurrency caps stop one heavy customer from starving the rest.</p>
         <div class="tenants">
           <div class="tenant"><b>northwind</b>4 agents · 212 tasks<div class="lock">🔒 isolated runtime home</div></div>
           <div class="tenant"><b>globex</b>7 agents · 1,480 tasks<div class="lock">🔒 isolated runtime home</div></div>
@@ -584,7 +638,7 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
       <div class="glass card span-3 wide reveal d1">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
         <h3>Policy that actually refuses</h3>
-        <p>Permissions compile into the runtime's fail‑closed hook. A denied tool is denied inside the agent, not hidden behind a button. Anything that can't be enforced is labelled <em>unenforced</em> instead of quietly claimed.</p>
+        <p>Permissions compile into the runtime's fail-closed hook. A denied tool is denied inside the agent, not hidden behind a button. Anything that can't be enforced is labelled <em>unenforced</em> instead of quietly claimed.</p>
         <div class="mini mono">
           <div class="r"><span>kb.search</span><span class="badge b-ok">ALLOW</span></div>
           <div class="r"><span>refund.issue</span><span class="badge b-hold">APPROVAL</span></div>
@@ -593,18 +647,18 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
       </div>
       <div class="glass card span-2 reveal">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 4h12l4 4v12H4z"/><path d="M8 10h8M8 14h8M8 18h5"/></svg></div>
-        <h3>Write‑ahead audit</h3>
-        <p>Model‑visible means logged. Intent before every action, committed or failed after, with the human actor, tenant and a correlation id.</p>
+        <h3>Write-ahead audit</h3>
+        <p>Model-visible means logged. Intent before every action, committed or failed after, with the human actor, tenant and a correlation id.</p>
       </div>
       <div class="glass card span-2 reveal d1">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M7 11V7a5 5 0 0110 0v4"/><rect x="4" y="11" width="16" height="10" rx="2"/></svg></div>
         <h3>Human approval gates</h3>
-        <p>Require sign‑off globally or only on customer‑facing channels. "Needs approval on Telegram" is its own compiled policy, not a flag someone can flip.</p>
+        <p>Require sign-off globally or only on customer-facing channels. "Needs approval on Telegram" is its own compiled policy, not a flag someone can flip.</p>
       </div>
       <div class="glass card span-2 reveal d2">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
         <h3>Governed automations</h3>
-        <p>Scheduled work is a first‑class object with an owner, a reason and permissions. It compiles into the runtime's real cron API through NOVA's validator.</p>
+        <p>Scheduled work is a first-class object with an owner, a reason and permissions. It compiles into the runtime's real cron API through NOVA's validator.</p>
       </div>
       <div class="glass card span-2 reveal">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
@@ -613,8 +667,8 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
       </div>
       <div class="glass card span-2 reveal d1">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></div>
-        <h3>White‑label Control Center</h3>
-        <p>React 19 under a strict CSP. Your customer's name, colours and support links come from their bundle. Light and dark, WCAG AA, keyboard‑first.</p>
+        <h3>White-label Control Center</h3>
+        <p>React 19 under a strict CSP. Your customer's name, colours and support links come from their bundle. Light and dark, WCAG AA, keyboard-first.</p>
       </div>
       <div class="glass card span-2 reveal d2">
         <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M17.5 19a4.5 4.5 0 100-9 6 6 0 00-11.6 2A4 4 0 006.5 19z"/></svg></div>
@@ -631,7 +685,7 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
     <div class="head center reveal">
       <span class="tag">The Control Center</span>
       <h2>Hand your customer a cockpit, <span class="serif grad-text">not a terminal.</span></h2>
-      <p>Real screenshots of the Control Center. It is a view onto the runtime, never the source of truth, and it tells you plainly when something has been declared but hasn't run yet.</p>
+      <p>The Control Center is a view onto the runtime, never the source of truth, and it tells you plainly when something has been declared but hasn't run yet.</p>
     </div>
     <div class="shots reveal">
       <div style="text-align:center"><div class="glass tabs" role="tablist" id="shotTabs">
@@ -640,7 +694,56 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
         <button role="tab" aria-selected="false" data-shot="2">Automations</button>
       </div></div>
       <div class="glass frame glow-border">
-        <img id="shotImg" src="/img/cc-overview.webp" alt="NOVA Control Center overview showing agents working, items needing a human and channel status" width="1600" height="1111" loading="lazy">
+        <div class="app">
+          <aside class="side">
+            <div class="org"><span class="av">A</span><div><b>Acme Intelligence</b><small class="mono">northwind</small></div></div>
+            <nav>
+              <a class="on" data-nav="0">◫ Overview</a><a>⚇ Agents <i>2</i></a><a>◎ Objectives</a><a data-nav="1">☰ Work <i>9</i></a>
+              <a>✓ Approvals <i class="am">1</i></a><a>∿ Activity</a><a>▢ Knowledge</a><a>⊞ Channels</a><a data-nav="2">⏲ Automations</a><a>⛨ Policies</a><a>◔ Usage</a>
+            </nav>
+          </aside>
+          <div class="main">
+            <div class="scr show">
+              <div class="mh"><div><b>Overview</b><small>The state of the whole workforce, at a glance.</small></div><span class="rt"><span class="dot"></span>hermes</span></div>
+              <div class="k4">
+                <div><small>Working now</small><b class="gr">5</b><span>items running or ready</span></div>
+                <div><small>Needs a human</small><b class="am">1</b><span>held until someone decides</span></div>
+                <div><small>Agents</small><b>2</b><span>2 in sync with the bundle</span></div>
+                <div><small>Channels live</small><b>1</b><span>of 1 connection</span></div>
+              </div>
+              <div class="two">
+                <div class="pnl"><h5>The workforce</h5><p class="sub">Every agent, what it is doing, and what it may reach.</p>
+                  <div class="agents">
+                    <div class="ag"><div class="agh"><span class="ini">AS</span><div><b>Acme Support Assistant</b><small class="mono">customer-support</small></div></div><span class="badge b-hold">● 1 needs a human</span><p>Verify returns backlog under 48h</p><div class="chs"><span>Telegram</span><span>2 corpora</span></div></div>
+                    <div class="ag"><div class="agh"><span class="ini">AO</span><div><b>Acme Ops</b><small class="mono">operations</small></div></div><span class="badge b-ok">● Working · 3 tasks</span><p>Weekly stock-out summary for depot 3</p><div class="chs"><span>Telegram</span></div></div>
+                  </div>
+                </div>
+                <div class="pnl"><h5>Needs a human</h5><p class="sub">Held until someone decides.</p>
+                  <div class="hold"><b>Escalation: damaged pallet, Rotterdam</b><small class="mono">customer-support · send_external_email</small><div class="acts"><button>Approve</button><button class="gh">Reject</button></div></div>
+                  <div class="plat"><span>Platform</span><b>v0.1.0</b><span>Runtime</span><b>hermes</b><span>Bundle</span><b class="mono">6e2fb0b9a7b2</b></div>
+                </div>
+              </div>
+            </div>
+            <div class="scr">
+              <div class="mh"><div><b>Work</b><small>Every task, tenant-scoped and durable, straight from the runtime.</small></div><span class="rt"><span class="dot"></span>hermes</span></div>
+              <div class="kb">
+                <div class="col"><h6>Ready <i>2</i></h6><div class="tk"><b>Reconcile March invoices</b><small>operations</small></div><div class="tk"><b>Draft supplier follow-ups</b><small>operations</small></div></div>
+                <div class="col"><h6>Running <i>3</i></h6><div class="tk run"><b>Weekly stock-out summary</b><small>operations · 2m</small></div><div class="tk run"><b>Answer ticket #4821</b><small>customer-support · 40s</small></div><div class="tk run"><b>Tag returns by reason</b><small>customer-support · 5m</small></div></div>
+                <div class="col"><h6>Needs a human <i class="am">1</i></h6><div class="tk hum"><b>Escalation: damaged pallet</b><small>approval · send_external_email</small></div></div>
+                <div class="col"><h6>Done <i>3</i></h6><div class="tk dn"><b>Refund policy lookup</b><small>committed · 14:02</small></div><div class="tk dn"><b>Daily KPI digest</b><small>committed · 09:00</small></div><div class="tk dn"><b>Close stale tickets</b><small>committed · 08:30</small></div></div>
+              </div>
+            </div>
+            <div class="scr">
+              <div class="mh"><div><b>Automations</b><small>Scheduled work, declared through NOVA and compiled into the runtime's cron.</small></div><span class="rt"><span class="dot"></span>hermes</span></div>
+              <div class="banner">ⓘ <span><b>Declared.</b> The runtime has recorded no execution of these schedules yet. NOVA will not show a run it hasn't observed.</span></div>
+              <div class="autos">
+                <div class="au"><div class="auh"><b>Weekly stock-out summary</b><span class="badge b-int">DECLARED</span></div><p class="mono">0 8 * * MON · operations</p><div class="chs"><span>inventory.read</span><span>slack.post</span></div><small>Owner alice@acme · reason: depot planning</small></div>
+                <div class="au"><div class="auh"><b>Daily returns backlog check</b><span class="badge b-int">DECLARED</span></div><p class="mono">0 9 * * * · customer-support</p><div class="chs"><span>tickets.read</span><span>kb.search</span></div><small>Owner ops-lead@acme · reason: 48h SLA</small></div>
+                <div class="au"><div class="auh"><b>Month-end invoice reconcile</b><span class="badge b-int">DECLARED</span></div><p class="mono">0 7 1 * * · operations</p><div class="chs"><span>invoices.read</span><span class="ap">approval on send</span></div><small>Owner finance@acme · reason: close books</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="cap" id="shotCap">The whole workforce at a glance: who is working, what is waiting on a human, and which channels are live.</div>
       </div>
     </div>
@@ -660,16 +763,16 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
       <div class="rung"><b>Wired</b><small>reaches the runtime</small><div class="bar"></div></div>
       <div class="rung"><b>Enforced</b><small>runtime refuses</small><div class="bar"></div></div>
       <div class="rung"><b>Tested</b><small>a test proves it</small><div class="bar"></div></div>
-      <div class="rung"><b>Live‑proven</b><small>observed happening</small><div class="bar"></div></div>
+      <div class="rung"><b>Live-proven</b><small>observed happening</small><div class="bar"></div></div>
     </div>
     <div class="glass tbl reveal">
       <table>
         <thead><tr><th>Capability</th><th>Status</th><th>How it is enforced</th></tr></thead>
         <tbody>
-          <tr><td>Tenant isolation of work</td><td><span class="badge b-ok">TESTED</span></td><td>SQL scoping at the store. A cross‑tenant read returns nothing.</td></tr>
-          <tr><td>Tool denial</td><td><span class="badge b-ok">TESTED</span></td><td>Compiled into the fail‑closed <span class="mono">pre_tool_call</span> hook.</td></tr>
+          <tr><td>Tenant isolation of work</td><td><span class="badge b-ok">TESTED</span></td><td>SQL scoping at the store. A cross-tenant read returns nothing.</td></tr>
+          <tr><td>Tool denial</td><td><span class="badge b-ok">TESTED</span></td><td>Compiled into the fail-closed <span class="mono">pre_tool_call</span> hook.</td></tr>
           <tr><td>Approval gates</td><td><span class="badge b-ok">TESTED</span></td><td>The runtime blocks the task and won't resume without a decision.</td></tr>
-          <tr><td>Per‑channel approval</td><td><span class="badge b-ok">TESTED</span></td><td>A derived profile with its own compiled policy.</td></tr>
+          <tr><td>Per-channel approval</td><td><span class="badge b-ok">TESTED</span></td><td>A derived profile with its own compiled policy.</td></tr>
           <tr><td>RBAC on the control plane</td><td><span class="badge b-ok">TESTED</span></td><td>Role checked on every route. Writes default to refusal.</td></tr>
           <tr><td>Audit completeness</td><td><span class="badge b-ok">TESTED</span></td><td>Every write emits intent, then committed or failed.</td></tr>
           <tr><td>Channel revocation</td><td><span class="badge b-ok">TESTED</span></td><td>Routing table replaced wholesale on every apply.</td></tr>
@@ -691,7 +794,7 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
     <div class="head center reveal">
       <span class="tag">Architecture</span>
       <h2>One path. <span class="serif grad-text">One direction.</span></h2>
-      <p>No browser ever talks to a runtime database. Every change travels through the authenticated, tenant‑scoped Control API and lands in the audit log.</p>
+      <p>No browser ever talks to a runtime database. Every change travels through the authenticated, tenant-scoped Control API and lands in the audit log.</p>
     </div>
     <div class="glass arch glow-border reveal">
       <div class="col">
@@ -704,14 +807,14 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
         <h4>NOVA control plane</h4>
         <div class="node nv">✅<div>Validate &amp; compile<small>references · permissions · schedules</small></div></div>
         <div class="node nv">🔐<div>Control API<small>RBAC · CSRF · bearer tokens</small></div></div>
-        <div class="node nv">📓<div>Write‑ahead audit<small>intent → committed / failed</small></div></div>
+        <div class="node nv">📓<div>Write-ahead audit<small>intent → committed / failed</small></div></div>
       </div>
       <div class="flow"></div>
       <div class="col">
         <h4>Hermes Agent runtime</h4>
         <div class="node rt">👤<div>Profile per agent<small>own .env, memory, cron</small></div></div>
-        <div class="node rt">⛔<div>pre_tool_call hook<small>fail‑closed enforcement</small></div></div>
-        <div class="node rt">🗂️<div>Kanban &amp; cron stores<small>durable, tenant‑scoped</small></div></div>
+        <div class="node rt">⛔<div>pre_tool_call hook<small>fail-closed enforcement</small></div></div>
+        <div class="node rt">🗂️<div>Kanban &amp; cron stores<small>durable, tenant-scoped</small></div></div>
         <div class="node rt">📡<div>Gateway<small>Telegram · Slack · Discord · more</small></div></div>
       </div>
     </div>
@@ -725,11 +828,11 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
     <div class="head reveal">
       <span class="tag">Deployed in your cloud</span>
       <h2>Runs in your AWS account. <span class="serif grad-text">Locked by default.</span></h2>
-      <p>Single‑tenant per deployment, provisioned with Terraform in your own account and region. Your data never leaves it.</p>
+      <p>Single-tenant per deployment, provisioned with Terraform in your own account and region. Your data never leaves it.</p>
     </div>
     <div class="sec">
       <div class="glass card reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M18.4 5.6L5.6 18.4"/><circle cx="12" cy="12" r="9"/></svg></div><h3>No ingress rules at all</h3><p>Nothing exposed, no bastion to maintain. Operators reach the host through SSM Session Manager only.</p></div>
-      <div class="glass card reveal d1"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3M16 7l3 3"/></svg></div><h3>KMS everywhere</h3><p>The state volume is KMS‑encrypted. Secrets Manager is scoped to a single prefix and nowhere else.</p></div>
+      <div class="glass card reveal d1"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3M16 7l3 3"/></svg></div><h3>KMS everywhere</h3><p>The state volume is KMS-encrypted. Secrets Manager is scoped to a single prefix and nowhere else.</p></div>
       <div class="glass card reveal d2"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"/></svg></div><h3>One IAM role per integration</h3><p>Generated from the declaration, enumerated resources, never wildcards. The list is the complete answer to "what can the agents touch?"</p></div>
       <div class="glass card reveal d3"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 6v6l4 2"/></svg></div><h3>Enumerated Bedrock models</h3><p>IMDSv2 required, hop limit 1. Model ids are listed explicitly, so "which models can this call?" always has an answer.</p></div>
     </div>
@@ -744,9 +847,9 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
       <h2>Built for teams who answer <span class="serif grad-text">to someone.</span></h2>
     </div>
     <div class="uses">
-      <div class="glass use reveal"><div class="emoji">🎧</div><h3>Customer operations</h3><p>Support agents on Telegram and WhatsApp that can issue refunds, but only with a human sign‑off above your threshold.</p><ul><li>Per‑channel approval rules</li><li>Escalations held for a human</li><li>Full conversation audit</li></ul></div>
-      <div class="glass use reveal d1"><div class="emoji">🏢</div><h3>Agencies &amp; MSPs</h3><p>Run AI workforces for many clients from one platform, with each client white‑labelled and fully isolated from the others.</p><ul><li>Tenant isolation in SQL</li><li>Branded Control Center per client</li><li>Fair scheduling across tenants</li></ul></div>
-      <div class="glass use reveal d2"><div class="emoji">🏦</div><h3>Regulated industries</h3><p>Finance, logistics and healthcare teams that need to prove to an auditor exactly what an agent did and who allowed it.</p><ul><li>Write‑ahead audit trail</li><li>Deployed in your own AWS</li><li>Honest capability catalogue</li></ul></div>
+      <div class="glass use reveal"><div class="emoji">🎧</div><h3>Customer operations</h3><p>Support agents on Telegram and WhatsApp that can issue refunds, but only with a human sign-off above your threshold.</p><ul><li>Per-channel approval rules</li><li>Escalations held for a human</li><li>Full conversation audit</li></ul></div>
+      <div class="glass use reveal d1"><div class="emoji">🏢</div><h3>Agencies &amp; MSPs</h3><p>Run AI workforces for many clients from one platform, with each client white-labelled and fully isolated from the others.</p><ul><li>Tenant isolation in SQL</li><li>Branded Control Center per client</li><li>Fair scheduling across tenants</li></ul></div>
+      <div class="glass use reveal d2"><div class="emoji">🏦</div><h3>Regulated industries</h3><p>Finance, logistics and healthcare teams that need to prove to an auditor exactly what an agent did and who allowed it.</p><ul><li>Write-ahead audit trail</li><li>Deployed in your own AWS</li><li>Honest capability catalogue</li></ul></div>
     </div>
   </div>
 </section>
@@ -780,12 +883,12 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
       <div class="glass plan hot glow-border reveal d1" style="position:relative">
         <span class="ribbon">MOST POPULAR</span>
         <span class="tier">Business</span><h3>Production</h3><p>Deployed in your AWS account with your branding and your policies.</p>
-        <ul><li>Unlimited agents &amp; automations</li><li>All channels incl. WhatsApp &amp; Signal</li><li>Terraform deployment in your cloud</li><li>White‑label Control Center</li><li>Priority engineering support</li></ul>
+        <ul><li>Unlimited agents &amp; automations</li><li>All channels incl. WhatsApp &amp; Signal</li><li>Terraform deployment in your cloud</li><li>White-label Control Center</li><li>Priority engineering support</li></ul>
         <a href="#contact" class="btn btn-primary" data-interest="demo">Book a demo</a>
       </div>
       <div class="glass plan reveal d2">
         <span class="tier">Partner</span><h3>Platform &amp; MSP</h3><p>Run governed AI workforces for your own customers.</p>
-        <ul><li>Multi‑tenant control plane</li><li>Per‑client branding</li><li>Reseller pricing</li><li>Joint go‑to‑market</li></ul>
+        <ul><li>Multi-tenant control plane</li><li>Per-client branding</li><li>Reseller pricing</li><li>Joint go-to-market</li></ul>
         <a href="#contact" class="btn btn-ghost" data-interest="partner">Become a partner</a>
       </div>
     </div>
@@ -798,10 +901,10 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
     <div class="head center reveal"><span class="tag">FAQ</span><h2>Questions, <span class="serif grad-text">answered.</span></h2></div>
     <div class="faq">
       <details class="glass reveal"><summary>Is NOVA another agent framework?</summary><p>No. NOVA is a governance and control layer on top of the Hermes Agent runtime. It doesn't replace the runtime, the scheduler or the task engine. It compiles your declarations into the runtime's own configuration and enforcement hooks, so you keep every upstream improvement.</p></details>
-      <details class="glass reveal"><summary>Where does my data live?</summary><p>In your own AWS account and region. NOVA is deployed with Terraform onto an EC2 instance with a KMS‑encrypted volume, no inbound ports, and access through SSM Session Manager only. NOVA never writes or reads the values of your credentials, only the names of the variables that hold them.</p></details>
+      <details class="glass reveal"><summary>Where does my data live?</summary><p>In your own AWS account and region. NOVA is deployed with Terraform onto an EC2 instance with a KMS-encrypted volume, no inbound ports, and access through SSM Session Manager only. NOVA never writes or reads the values of your credentials, only the names of the variables that hold them.</p></details>
       <details class="glass reveal"><summary>Which models and channels are supported?</summary><p>Models are reached through the runtime's providers, including Amazon Bedrock with explicitly enumerated model ids. Channels include Telegram, Slack, Discord, WhatsApp and Signal, routed by the runtime's own gateway and governed by NOVA's routing table.</p></details>
       <details class="glass reveal"><summary>How do approvals work in practice?</summary><p>You mark a business action, such as issuing a refund or sending an external email, as requiring approval, either everywhere or only on specific channels. When an agent attempts it, the runtime blocks the task until someone with the right role approves or rejects it in the Control Center. Both the request and the decision are audited.</p></details>
-      <details class="glass reveal"><summary>Can I white‑label it for my clients?</summary><p>Yes. Product name, colours and support links come from each tenant's bundle and are compiled into the Control Center, so every client sees their own brand.</p></details>
+      <details class="glass reveal"><summary>Can I white-label it for my clients?</summary><p>Yes. Product name, colours and support links come from each tenant's bundle and are compiled into the Control Center, so every client sees their own brand.</p></details>
       <details class="glass reveal"><summary>How long does a deployment take?</summary><p>A pilot on one workflow typically runs in about 30 days. The deployment itself is a validated Terraform apply; most of the time goes into agreeing the policy and approvals with your team.</p></details>
     </div>
   </div>
@@ -813,7 +916,7 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
     <div class="glass info glow-border reveal">
       <span class="tag" style="position:relative">Book a demo</span>
       <h2 style="position:relative">See your own workflow, <span class="serif grad-text">governed.</span></h2>
-      <p style="position:relative">Tell us a little about your team. We'll come back within one business day with a time for a 30‑minute live session.</p>
+      <p style="position:relative">Tell us a little about your team. We'll come back within one business day with a time for a 30-minute live session.</p>
       <div class="agenda" style="position:relative">
         <div><span>1</span><p>Your use case, mapped<small>We sketch your agents, actions and approvals as a NOVA bundle.</small></p></div>
         <div><span>2</span><p>A live run in the Control Center<small>Watch a denied tool, an approval gate and the audit trail in real time.</small></p></div>
@@ -847,7 +950,7 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
             <option value="">Select…</option><option>1–10</option><option>11–50</option><option>51–200</option><option>201–1,000</option><option>1,000+</option>
           </select>
         </div>
-        <div class="field"><label for="f-msg">What would you like your agents to do?</label><textarea id="f-msg" name="message" maxlength="4000" placeholder="e.g. Handle tier‑1 support on WhatsApp and issue refunds under €500 without approval."></textarea></div>
+        <div class="field"><label for="f-msg">What would you like your agents to do?</label><textarea id="f-msg" name="message" maxlength="4000" placeholder="e.g. Handle tier-1 support on WhatsApp and issue refunds under €500 without approval."></textarea></div>
         <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
         <button class="btn btn-primary submit" type="submit" id="submitBtn">Request my demo
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
@@ -951,7 +1054,7 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
     const [cls, label, msg] = events[i++ % events.length];
     const row = document.createElement('div');
     row.className = 'row';
-    row.innerHTML = `<span class="t">${stamp()}</span><span class="badge ${cls}">${label}</span><span class="msg">${msg}</span>`;
+    row.innerHTML = '<span class="t">' + stamp() + '</span><span class="badge ' + cls + '">' + label + '</span><span class="msg">' + msg + '</span>';
     feed.prepend(row);
     while (feed.children.length > 8) feed.lastChild.remove();
   };
@@ -963,7 +1066,7 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
     const b = e.currentTarget;
     b.textContent = 'Approved ✓'; b.style.background = '#4ADE80';
     const row = document.createElement('div'); row.className = 'row';
-    row.innerHTML = `<span class="t">${stamp()}</span><span class="badge b-ok">COMMIT</span><span class="msg"><em>you</em> approved refund.issue</span>`;
+    row.innerHTML = '<span class="t">' + stamp() + '</span><span class="badge b-ok">COMMIT</span><span class="msg"><em>you</em> approved refund.issue</span>';
     feed.prepend(row);
     setTimeout(() => { b.textContent = 'Approve'; b.style.background = ''; }, 3500);
   });
@@ -982,24 +1085,24 @@ footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,25
   steps.forEach((s, k) => s.addEventListener('click', () => show(k)));
   show(0);
 
-  // screenshots
-  const shots = [
-    ['/img/cc-overview.webp', 'The whole workforce at a glance: who is working, what is waiting on a human, and which channels are live.', 'NOVA Control Center overview'],
-    ['/img/cc-work.webp', 'The work board: every task, tenant‑scoped and durable, with its state straight from the runtime.', 'NOVA Control Center work board'],
-    ['/img/cc-automations.webp', 'Governed automations. Note the banner: the platform tells you nothing has executed yet, instead of letting the cards imply it.', 'NOVA Control Center automations'],
+  // control center mockup
+  const caps = [
+    'The whole workforce at a glance: who is working, what is waiting on a human, and which channels are live.',
+    'The work board: every task, tenant-scoped and durable, with its state straight from the runtime.',
+    'Governed automations. The banner tells you nothing has executed yet, instead of letting the cards imply it.',
   ];
-  $$('#shotTabs button').forEach(b => b.addEventListener('click', () => {
-    $$('#shotTabs button').forEach(x => { x.classList.remove('on'); x.setAttribute('aria-selected', 'false'); });
-    b.classList.add('on'); b.setAttribute('aria-selected', 'true');
-    const [src, cap, alt] = shots[+b.dataset.shot], img = $('#shotImg');
-    img.style.opacity = 0;
-    setTimeout(() => { img.src = src; img.alt = alt; $('#shotCap').textContent = cap; img.style.opacity = 1; }, 180);
-  }));
-  $('#shotImg').style.transition = 'opacity .25s';
+  const showShot = n => {
+    $$('#shotTabs button').forEach((x, k) => { x.classList.toggle('on', k === n); x.setAttribute('aria-selected', k === n); });
+    $$('.app .scr').forEach((x, k) => x.classList.toggle('show', k === n));
+    $$('.side a[data-nav]').forEach(a => a.classList.toggle('on', +a.dataset.nav === n));
+    $('#shotCap').textContent = caps[n];
+  };
+  $$('#shotTabs button').forEach(b => b.addEventListener('click', () => showShot(+b.dataset.shot)));
+  $$('.side a[data-nav]').forEach(a => a.addEventListener('click', () => showShot(+a.dataset.nav)));
 
   // CTA buttons preselect interest
   $$('[data-interest]').forEach(a => a.addEventListener('click', () => {
-    const r = $(`input[name=interest][value=${a.dataset.interest}]`); if (r) r.checked = true;
+    const r = $('input[name=interest][value=' + a.dataset.interest + ']'); if (r) r.checked = true;
   }));
 
   // form

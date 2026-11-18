@@ -1,14 +1,5 @@
 // NOVA marketing site: serves the landing page and stores contact / demo requests in KV.
 import html from "../public/index.html";
-import ccOverview from "../public/img/cc-overview.webp";
-import ccWork from "../public/img/cc-work.webp";
-import ccAutomations from "../public/img/cc-automations.webp";
-
-const IMAGES = {
-  "/img/cc-overview.webp": ccOverview,
-  "/img/cc-work.webp": ccWork,
-  "/img/cc-automations.webp": ccAutomations,
-};
 
 const SECURITY_HEADERS = {
   "Content-Security-Policy": [
@@ -114,12 +105,6 @@ export default {
 
     if (request.method !== "GET" && request.method !== "HEAD") {
       return new Response("Method not allowed", { status: 405, headers: SECURITY_HEADERS });
-    }
-
-    if (IMAGES[url.pathname]) {
-      return new Response(IMAGES[url.pathname], {
-        headers: { "Content-Type": "image/webp", "Cache-Control": "public, max-age=604800", ...SECURITY_HEADERS },
-      });
     }
 
     if (url.pathname === "/" || url.pathname === "/index.html") {

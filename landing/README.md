@@ -1,13 +1,14 @@
 # NOVA landing page
 
+Live at https://nova-landing.maareye.workers.dev
+
 The public marketing site for NOVA: what it is, how it works, the trust model, plans, and a
 contact / demo request form. One Cloudflare Worker serves everything.
 
 ```
 landing/
   public/index.html     the whole page (inline CSS and JS, no build step)
-  public/img/*.webp     Control Center screenshots, resized from docs/assets
-  src/worker.js         serves the page and images, handles POST /api/contact
+  src/worker.js         serves the page, handles POST /api/contact
   wrangler.toml         Worker config and the LEADS KV binding
 ```
 

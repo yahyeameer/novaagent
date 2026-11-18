@@ -5,7 +5,6 @@ workers_dev = true
 
 rules = [
   { type = "Text", globs = ["**/*.html"], fallthrough = true },
-  { type = "Data", globs = ["**/*.webp"], fallthrough = true },
 ]
 
 # Contact and demo requests. Create with: npx wrangler kv namespace create LEADS
