@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOVA · The AI workforce, governed</title>
+<meta name="description" content="NOVA is the governance layer that turns an AI agent runtime into something a business can be accountable for: real multi-tenancy, policy that refuses, write-ahead audit, human approval gates and a white-label Control Center.">
+<meta property="og:title" content="NOVA · The AI workforce, governed">
+<meta property="og:description" content="Deploy AI agents your compliance team can sign off on. Tenants, policy, audit and approvals, enforced inside the runtime.">
+<meta name="theme-color" content="#070A16">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237DD3FC'/%3E%3Cstop offset='.5' stop-color='%23A78BFA'/%3E%3Cstop offset='1' stop-color='%23F0ABFC'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%23070A16'/%3E%3Ccircle cx='32' cy='32' r='18' fill='none' stroke='url(%23g)' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='6' fill='url(%23g)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070A16; --bg2:#0B1020; --ink:#EEF2FF; --muted:#A3ACC9; --dim:#6B7393;
+  --sky:#7DD3FC; --violet:#A78BFA; --pink:#F0ABFC; --teal:#5EEAD4; --amber:#FBBF24; --red:#FB7185; --green:#4ADE80;
+  --glass:rgba(255,255,255,.045); --glass2:rgba(255,255,255,.07); --stroke:rgba(255,255,255,.10); --stroke2:rgba(255,255,255,.18);
+  --grad:linear-gradient(100deg,var(--sky) 0%,var(--violet) 38%,var(--pink) 72%,var(--teal) 100%);
+  --r:22px; --maxw:1200px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.serif{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;letter-spacing:-.01em}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:shine 8s linear infinite}
+@keyframes shine{to{background-position:200% 0}}
+
+/* ---------- ambient background ---------- */
+.ambient{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.ambient .grid{position:absolute;inset:-2px;background-image:linear-gradient(rgba(125,211,252,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(125,211,252,.05) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 80% 60% at 50% 20%,#000 30%,transparent 75%)}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.55;animation:drift 22s ease-in-out infinite alternate}
+.orb.o1{width:620px;height:620px;background:#6D28D9;top:-180px;left:-160px}
+.orb.o2{width:520px;height:520px;background:#0EA5E9;top:10%;right:-180px;animation-delay:-6s;opacity:.4}
+.orb.o3{width:480px;height:480px;background:#DB2777;top:55%;left:30%;animation-delay:-12s;opacity:.22}
+.orb.o4{width:420px;height:420px;background:#14B8A6;bottom:-120px;right:10%;animation-delay:-3s;opacity:.25}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(60px,40px) scale(1.08)}100%{transform:translate(-40px,80px) scale(.95)}}
+.noise{position:absolute;inset:0;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* ---------- glass primitives ---------- */
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.025));border:1px solid var(--stroke);border-radius:var(--r);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 30px 80px -30px rgba(0,0,0,.6)}
+.glow-border{position:relative}
+.glow-border::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(140deg,rgba(125,211,252,.6),rgba(167,139,250,.15) 40%,rgba(240,171,252,.5));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:999px;border:1px solid var(--stroke);background:var(--glass);font-size:13px;color:var(--muted);backdrop-filter:blur(12px)}
+.pill b{color:var(--ink);font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.55)}70%{box-shadow:0 0 0 10px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+.tag{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sky);font-weight:600;display:inline-flex;align-items:center;gap:10px}
+.tag::before{content:"";width:22px;height:1px;background:currentColor;opacity:.6}
+
+.btn{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;border-radius:14px;font-weight:600;font-size:15px;border:1px solid transparent;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s;font-family:inherit}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:linear-gradient(135deg,#8B5CF6,#6366F1 45%,#0EA5E9);color:#fff;box-shadow:0 10px 40px -10px rgba(139,92,246,.8),0 1px 0 rgba(255,255,255,.3) inset}
+.btn-primary:hover{box-shadow:0 18px 50px -12px rgba(139,92,246,.95),0 1px 0 rgba(255,255,255,.3) inset}
+.btn-ghost{background:var(--glass);border-color:var(--stroke2);color:var(--ink);backdrop-filter:blur(12px)}
+.btn-ghost:hover{background:var(--glass2)}
+.btn svg{width:18px;height:18px}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;top:16px;left:0;right:0;z-index:50}
+.nav .bar{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:10px 12px 10px 20px;border-radius:18px;transition:background .3s,border-color .3s}
+.nav.scrolled .bar{background:rgba(10,14,30,.6);border:1px solid var(--stroke);backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%)}
+.nav .wrapper{padding:0 16px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.18em;font-size:16px}
+.logo svg{width:30px;height:30px}
+.nav ul{display:flex;gap:4px;list-style:none}
+.nav ul a{padding:8px 14px;border-radius:10px;font-size:14px;color:var(--muted);transition:color .2s,background .2s}
+.nav ul a:hover{color:var(--ink);background:var(--glass)}
+.nav .cta{display:flex;gap:8px}
+.nav .btn{padding:10px 16px;font-size:14px;border-radius:12px}
+.burger{display:none;background:none;border:1px solid var(--stroke);border-radius:10px;color:var(--ink);width:42px;height:42px;cursor:pointer}
+
+/* ---------- hero ---------- */
+.hero{padding:170px 0 80px;position:relative}
+.hero .inner{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero h1{font-size:clamp(44px,6.4vw,84px);line-height:.98;letter-spacing:-.045em;font-weight:800;margin:22px 0 22px}
+.hero h1 .serif{font-weight:400;letter-spacing:-.02em}
+.hero p.lead{font-size:19px;color:var(--muted);max-width:560px}
+.hero .ctas{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}
+.hero .proof{display:flex;gap:28px;margin-top:44px;flex-wrap:wrap}
+.hero .proof div{font-size:13px;color:var(--dim)}
+.hero .proof b{display:block;font-size:26px;color:var(--ink);font-weight:700;letter-spacing:-.02em}
+
+/* hero console */
+.console{padding:0;overflow:hidden;transform:perspective(1400px) rotateY(-8deg) rotateX(4deg);transition:transform .6s cubic-bezier(.2,.8,.2,1);position:relative}
+.console:hover{transform:perspective(1400px) rotateY(-2deg) rotateX(1deg)}
+.console .top{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--stroke)}
+.console .top i{width:11px;height:11px;border-radius:50%;background:#ffffff22}
+.console .top i:nth-child(1){background:#FB7185aa}.console .top i:nth-child(2){background:#FBBF24aa}.console .top i:nth-child(3){background:#4ADE80aa}
+.console .top span{margin-left:10px;font-size:12px;color:var(--dim)}
+.console .top .live{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green)}
+.console .body{padding:18px;display:grid;gap:14px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kpi{padding:14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--stroke)}
+.kpi small{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.kpi b{display:block;font-size:26px;font-weight:700;letter-spacing:-.02em;margin-top:4px}
+.kpi.g b{color:var(--green)}.kpi.a b{color:var(--amber)}.kpi.v b{color:var(--violet)}
+.feed{border-radius:14px;background:rgba(0,0,0,.25);border:1px solid var(--stroke);padding:12px 14px;height:214px;overflow:hidden;position:relative;font-size:12.5px}
+.feed::after{content:"";position:absolute;left:0;right:0;bottom:0;height:50px;background:linear-gradient(transparent,rgba(9,12,26,.95))}
+.feed .row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed rgba(255,255,255,.06);animation:slideIn .5s ease both}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.feed .t{color:var(--dim);min-width:58px}
+.badge{font-size:10.5px;padding:2px 8px;border-radius:999px;font-weight:600;white-space:nowrap;border:1px solid}
+.b-int{color:var(--sky);border-color:rgba(125,211,252,.35);background:rgba(125,211,252,.08)}
+.b-ok{color:var(--green);border-color:rgba(74,222,128,.35);background:rgba(74,222,128,.08)}
+.b-deny{color:var(--red);border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.08)}
+.b-hold{color:var(--amber);border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.08)}
+.feed .msg{color:var(--muted)} .feed .msg em{color:var(--ink);font-style:normal}
+.approval{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:linear-gradient(90deg,rgba(251,191,36,.10),rgba(251,191,36,.02));border:1px solid rgba(251,191,36,.3)}
+.approval .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(251,191,36,.15);color:var(--amber);flex:none}
+.approval p{font-size:13px;line-height:1.35;flex:1}.approval p small{color:var(--dim);display:block}
+.approval button{font:600 12px Inter;padding:8px 12px;border-radius:10px;border:none;cursor:pointer;background:var(--amber);color:#1a1300}
+.float-chip{position:absolute;padding:10px 14px;border-radius:14px;font-size:12.5px;display:flex;align-items:center;gap:8px;animation:bob 6s ease-in-out infinite;z-index:2;white-space:nowrap}
+.float-chip.c1{top:-34px;right:-14px}
+.float-chip.c2{bottom:-24px;left:-28px;animation-delay:-3s}
+@keyframes bob{50%{transform:translateY(-10px)}}
+.hero-visual{position:relative}
+
+/* ---------- marquee ---------- */
+.marquee{padding:30px 0 10px;border-top:1px solid rgba(255,255,255,.05);border-bottom:1px solid rgba(255,255,255,.05);margin-top:40px;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent)}
+.marquee .label{text-align:center;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:18px}
+.track{display:flex;gap:48px;width:max-content;animation:scroll 40s linear infinite;padding-bottom:20px}
+.track span{font-size:18px;font-weight:600;color:#C7CCE4;opacity:.65;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.track span::before{content:"◆";font-size:9px;color:var(--violet)}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* ---------- sections ---------- */
+section{padding:110px 0;position:relative}
+.head{max-width:760px;margin-bottom:56px}
+.head.center{margin-left:auto;margin-right:auto;text-align:center}
+.head.center .tag::after{content:"";width:22px;height:1px;background:currentColor;opacity:.6}
+.head h2{font-size:clamp(34px,4.4vw,56px);line-height:1.04;letter-spacing:-.035em;font-weight:800;margin:16px 0 18px}
+.head p{font-size:18px;color:var(--muted)}
+
+/* problem */
+.qgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.q{padding:26px;transition:transform .3s,border-color .3s}
+.q:hover{transform:translateY(-4px);border-color:var(--stroke2)}
+.q .n{font-size:13px;color:var(--dim)}
+.q h3{font-size:20px;letter-spacing:-.02em;margin:14px 0 8px;font-weight:700}
+.q p{font-size:14.5px;color:var(--muted)}
+.statement{margin-top:28px;padding:30px 34px;display:flex;gap:24px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.statement p{font-size:20px;letter-spacing:-.01em;max-width:780px}
+.statement p b{color:var(--teal)}
+
+/* how it works */
+.steps{display:grid;grid-template-columns:1fr 1.1fr;gap:40px;align-items:start}
+.step-list{display:grid;gap:12px}
+.step{display:flex;gap:18px;padding:22px;cursor:pointer;transition:all .3s;border-radius:var(--r);border:1px solid transparent}
+.step:hover{background:var(--glass)}
+.step.active{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border-color:var(--stroke2)}
+.step .num{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-weight:700;background:rgba(255,255,255,.05);border:1px solid var(--stroke);color:var(--muted);transition:all .3s}
+.step.active .num{background:linear-gradient(135deg,#8B5CF6,#0EA5E9);color:#fff;border-color:transparent;box-shadow:0 8px 30px -8px rgba(139,92,246,.8)}
+.step h3{font-size:19px;font-weight:700;letter-spacing:-.02em}
+.step p{font-size:14.5px;color:var(--muted);margin-top:4px}
+.step .bar{height:2px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:14px;overflow:hidden;display:none}
+.step.active .bar{display:block}
+.step .bar i{display:block;height:100%;width:0;background:var(--grad)}
+.step.active .bar i{animation:fill 6s linear forwards}
+@keyframes fill{to{width:100%}}
+.code{position:sticky;top:110px;padding:0;overflow:hidden}
+.code .top{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--stroke);font-size:12.5px;color:var(--dim)}
+.code .top b{color:var(--ink);font-weight:500}
+.code pre{padding:22px;font-size:13.2px;line-height:1.75;overflow:auto;min-height:380px;color:#CBD5F5;white-space:pre}
+.code pre .k{color:var(--violet)}.code pre .s{color:var(--teal)}.code pre .c{color:var(--dim)}.code pre .o{color:var(--green)}.code pre .w{color:var(--amber)}.code pre .e{color:var(--red)}.code pre .p{color:var(--sky)}
+.pane{display:none;animation:fadeUp .45s ease both}
+.pane.show{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* bento */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.card{padding:28px;position:relative;overflow:hidden;transition:transform .35s,border-color .35s}
+.card:hover{transform:translateY(-4px);border-color:var(--stroke2)}
+.card::after{content:"";position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(167,139,250,.18),transparent 70%);top:var(--my,-150px);left:var(--mx,-150px);transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .3s}
+.card:hover::after{opacity:1}
+.card .ic{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;margin-bottom:18px;border:1px solid var(--stroke2);background:linear-gradient(135deg,rgba(167,139,250,.25),rgba(125,211,252,.08))}
+.card .ic svg{width:22px;height:22px;stroke:var(--ink)}
+.card h3{font-size:21px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+.card p{font-size:15px;color:var(--muted)}
+.card code{font-family:"JetBrains Mono",monospace;font-size:12.5px;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,.07);color:#DDE3FF}
+.span-2{grid-column:span 2}.span-3{grid-column:span 3}.span-4{grid-column:span 4}
+.mini{margin-top:20px;display:grid;gap:8px}
+.mini .r{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:9px 12px;border-radius:10px;background:rgba(0,0,0,.25);border:1px solid var(--stroke)}
+.tenants{display:flex;gap:10px;margin-top:20px}
+.tenant{flex:1;padding:14px;border-radius:14px;border:1px dashed var(--stroke2);font-size:12.5px;color:var(--muted)}
+.tenant b{display:block;color:var(--ink);font-size:14px;margin-bottom:6px}
+.tenant .lock{color:var(--teal);font-size:11px}
+
+/* screenshots */
+.shots{position:relative}
+.tabs{display:inline-flex;gap:4px;padding:5px;border-radius:14px;margin-bottom:22px}
+.tabs button{font:500 14px Inter;color:var(--muted);background:none;border:none;padding:9px 16px;border-radius:10px;cursor:pointer;transition:all .25s}
+.tabs button.on{background:rgba(255,255,255,.12);color:var(--ink)}
+.frame{padding:10px;border-radius:26px}
+.frame .cap{padding:14px 10px 4px;font-size:14px;color:var(--muted)}
+
+.app{display:grid;grid-template-columns:230px 1fr;border-radius:18px;overflow:hidden;background:rgba(8,11,24,.75);border:1px solid var(--stroke);min-height:560px;font-size:13.5px}
+.side{padding:18px 12px;border-right:1px solid var(--stroke);background:rgba(255,255,255,.02)}
+.org{display:flex;gap:10px;align-items:center;padding:0 6px 18px}
+.org .av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#6366F1,#0EA5E9);font-weight:700}
+.org b{display:block;font-size:13.5px}.org small{color:var(--dim);font-size:11px}
+.side nav{display:grid;gap:2px}
+.side nav a{display:flex;justify-content:space-between;padding:8px 10px;border-radius:9px;color:var(--muted);cursor:default}
+.side nav a[data-nav]{cursor:pointer}
+.side nav a.on{background:rgba(255,255,255,.08);color:var(--ink);box-shadow:inset 2px 0 0 var(--violet)}
+.side nav i{font-style:normal;font-size:11px;padding:0 7px;border-radius:999px;background:rgba(255,255,255,.08)}
+.side nav i.am{background:rgba(251,191,36,.2);color:var(--amber)}
+.main{padding:22px;min-width:0}
+.scr{display:none;animation:fadeUp .4s ease both}.scr.show{display:block}
+.mh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;gap:12px}
+.mh b{font-size:17px;display:block}.mh small{color:var(--dim)}
+.rt{display:flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;border:1px solid var(--stroke);font-size:12px;color:var(--muted);white-space:nowrap}
+.k4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.k4>div{padding:14px;border-radius:14px;border:1px solid var(--stroke);background:rgba(255,255,255,.03)}
+.k4 small{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.k4 b{display:block;font-size:28px;font-weight:700;margin:2px 0}.k4 span{font-size:12px;color:var(--muted)}
+.gr{color:var(--green)}.am{color:var(--amber)}
+.two{display:grid;grid-template-columns:1.6fr 1fr;gap:12px}
+.pnl{padding:16px;border-radius:14px;border:1px solid var(--stroke);background:rgba(255,255,255,.03)}
+.pnl h5{font-size:14.5px}.pnl .sub{color:var(--dim);font-size:12.5px;margin-bottom:12px}
+.agents{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ag{padding:12px;border-radius:12px;border:1px solid var(--stroke);background:rgba(0,0,0,.2)}
+.agh{display:flex;gap:9px;align-items:center;margin-bottom:10px}
+.agh b{font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}.agh small{color:var(--dim);font-size:11px}
+.ini{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;border:1px solid var(--stroke2);font-size:11px;font-weight:700;flex:none}
+.ag p{font-size:12.5px;color:var(--muted);margin:10px 0}
+.chs{display:flex;gap:6px;flex-wrap:wrap}
+.chs span{font-size:11px;padding:3px 8px;border-radius:7px;border:1px solid var(--stroke);color:var(--muted)}
+.chs span.ap{border-color:rgba(251,191,36,.35);color:var(--amber)}
+.hold{padding:12px;border-radius:12px;border:1px solid rgba(251,191,36,.3);background:rgba(251,191,36,.06);margin-bottom:12px}
+.hold b{font-size:13px;display:block}.hold small{color:var(--dim);font-size:11px}
+.acts{display:flex;gap:6px;margin-top:10px}
+.acts button{font:600 11.5px Inter;padding:6px 12px;border-radius:8px;border:none;background:var(--amber);color:#1a1300;cursor:pointer}
+.acts button.gh{background:rgba(255,255,255,.08);color:var(--ink)}
+.plat{display:grid;grid-template-columns:1fr auto;gap:7px;font-size:12.5px}.plat span{color:var(--dim)}
+.kb{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.col{padding:10px;border-radius:14px;background:rgba(255,255,255,.025);border:1px solid var(--stroke);min-height:380px}
+.col h6{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;padding:4px 4px 10px}
+.col h6 i{font-style:normal;color:var(--dim)}
+.tk{padding:11px;border-radius:11px;background:rgba(0,0,0,.25);border:1px solid var(--stroke);margin-bottom:8px;border-left:3px solid var(--dim)}
+.tk b{display:block;font-size:12.5px;font-weight:600}.tk small{color:var(--dim);font-size:11px}
+.tk.run{border-left-color:var(--sky)}.tk.hum{border-left-color:var(--amber)}.tk.dn{border-left-color:var(--green);opacity:.75}
+.banner{display:flex;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid rgba(125,211,252,.3);background:rgba(125,211,252,.07);color:#CFEFFF;margin-bottom:14px;font-size:13px}
+.autos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.au{padding:14px;border-radius:14px;border:1px solid var(--stroke);background:rgba(255,255,255,.03);display:grid;gap:10px}
+.auh{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.auh b{font-size:13.5px}
+.au p{font-size:12px;color:var(--sky)}.au small{color:var(--dim);font-size:11.5px}
+
+/* ladder */
+.ladder{display:grid;grid-template-columns:repeat(5,1fr);gap:0;position:relative;margin-bottom:28px}
+.rung{padding:22px 18px;text-align:center;position:relative}
+.rung + .rung::before{content:"";position:absolute;left:-10px;top:50%;width:20px;height:20px;border-top:1px solid var(--stroke2);border-right:1px solid var(--stroke2);transform:translateY(-50%) rotate(45deg);opacity:.6}
+.rung b{display:block;font-size:17px;letter-spacing:-.01em}
+.rung small{color:var(--dim);font-size:13px}
+.rung .bar{height:4px;border-radius:4px;margin:14px auto 0;width:70%}
+.rung:nth-child(1) .bar,.rung:nth-child(2) .bar{background:#FB923C}
+.rung:nth-child(3) .bar{background:#FACC15}
+.rung:nth-child(4) .bar,.rung:nth-child(5) .bar{background:var(--green)}
+.tbl{overflow:hidden;padding:0}
+.tbl table{width:100%;border-collapse:collapse;font-size:14.5px}
+.tbl th{text-align:left;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);padding:16px 22px;border-bottom:1px solid var(--stroke);font-weight:600}
+.tbl td{padding:14px 22px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--muted)}
+.tbl td:first-child{color:var(--ink);font-weight:500}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.025)}
+.honest{margin-top:20px;padding:20px 24px;display:flex;gap:16px;align-items:flex-start;border-color:rgba(251,191,36,.3);background:linear-gradient(90deg,rgba(251,191,36,.07),rgba(255,255,255,.02))}
+.honest p{color:var(--muted);font-size:15px}.honest p b{color:var(--ink)}
+
+/* architecture */
+.arch{padding:36px;display:grid;grid-template-columns:1fr auto 1.3fr auto 1.4fr;gap:18px;align-items:center}
+.col h4{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:12px;font-weight:600}
+.node{padding:14px 16px;border-radius:14px;border:1px solid var(--stroke);background:rgba(255,255,255,.035);font-size:14px;margin-bottom:10px;display:flex;gap:10px;align-items:center}
+.node small{display:block;color:var(--dim);font-size:12px}
+.node.nv{border-color:rgba(167,139,250,.4);background:rgba(167,139,250,.08)}
+.node.rt{border-color:rgba(94,234,212,.35);background:rgba(94,234,212,.06)}
+.node.cu{border-color:rgba(125,211,252,.35);background:rgba(125,211,252,.06)}
+.flow{width:56px;height:2px;position:relative;background:linear-gradient(90deg,rgba(255,255,255,.08),rgba(255,255,255,.2));overflow:visible}
+.flow::after{content:"";position:absolute;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--sky);box-shadow:0 0 14px var(--sky);animation:travel 2.4s linear infinite}
+@keyframes travel{from{left:0}to{left:calc(100% - 8px)}}
+.rule{margin-top:22px;text-align:center;color:var(--muted);font-size:15.5px}
+.rule b{color:var(--ink)}
+
+/* security */
+.sec{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.sec .card{padding:24px}
+.sec .card h3{font-size:17px}
+.sec .card p{font-size:14px}
+
+/* use cases */
+.uses{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.use{padding:30px;min-height:260px;display:flex;flex-direction:column}
+.use .emoji{font-size:30px;padding-bottom:28px}
+.use h3{font-size:22px;letter-spacing:-.02em;margin-bottom:8px}
+.use p{color:var(--muted);font-size:15px}
+.use ul{list-style:none;margin-top:16px;display:grid;gap:6px}
+.use li{font-size:13.5px;color:#C9CFE8;display:flex;gap:8px}
+.use li::before{content:"✓";color:var(--teal)}
+
+/* stats band */
+.band{padding:46px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
+.band b{display:block;font-size:clamp(38px,4.5vw,58px);font-weight:800;letter-spacing:-.04em;line-height:1}
+.band span{color:var(--muted);font-size:14px;display:block;margin-top:10px}
+
+/* pricing-ish engagement */
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.plan{padding:32px;display:flex;flex-direction:column}
+.plan.hot{background:linear-gradient(180deg,rgba(139,92,246,.18),rgba(14,165,233,.05));border-color:rgba(167,139,250,.5)}
+.plan .tier{font-size:13px;color:var(--sky);font-weight:600;letter-spacing:.1em;text-transform:uppercase}
+.plan h3{font-size:28px;letter-spacing:-.03em;margin:8px 0 6px}
+.plan > p{color:var(--muted);font-size:14.5px;min-height:46px}
+.plan ul{list-style:none;margin:22px 0 28px;display:grid;gap:10px;flex:1}
+.plan li{font-size:14.5px;display:flex;gap:10px;color:#D3D8EE}
+.plan li::before{content:"";flex:none;width:18px;height:18px;margin-top:3px;border-radius:50%;background:rgba(94,234,212,.15) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235EEAD4' stroke-width='3'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/11px no-repeat}
+.plan .btn{justify-content:center}
+.ribbon{position:absolute;top:18px;right:18px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--grad);color:#0B1020}
+
+/* faq */
+.faq{max-width:860px;margin:0 auto;display:grid;gap:12px}
+.faq details{padding:0;border-radius:18px}
+.faq summary{list-style:none;cursor:pointer;padding:22px 26px;font-weight:600;font-size:17px;display:flex;justify-content:space-between;gap:20px;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:24px;font-weight:300;color:var(--muted);transition:transform .3s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{padding:0 26px 24px;color:var(--muted);font-size:15.5px}
+
+/* contact */
+.contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:28px;align-items:stretch}
+.contact .info{padding:40px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.contact .info::before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.35),transparent 65%);right:-180px;top:-160px}
+.contact .info h2{font-size:clamp(32px,3.6vw,46px);letter-spacing:-.035em;line-height:1.05;margin:16px 0}
+.contact .info > p{color:var(--muted);font-size:16.5px}
+.agenda{margin-top:30px;display:grid;gap:14px}
+.agenda div{display:flex;gap:14px;align-items:flex-start}
+.agenda span{flex:none;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:13px;font-weight:700;background:rgba(255,255,255,.07);border:1px solid var(--stroke)}
+.agenda p{font-size:14.5px;color:#D3D8EE}.agenda p small{display:block;color:var(--dim);font-size:13px}
+.contact .meta{margin-top:auto;padding-top:30px;display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;color:var(--muted)}
+.form{padding:40px}
+.form .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{display:grid;gap:7px;margin-bottom:16px}
+.field label{font-size:13px;color:var(--muted);font-weight:500}
+.field input,.field select,.field textarea{font:15px Inter;color:var(--ink);background:rgba(0,0,0,.28);border:1px solid var(--stroke2);border-radius:12px;padding:13px 14px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A3ACC9' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:16px;padding-right:38px}
+.field select option{background:#0B1020}
+.field textarea{min-height:110px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--violet);box-shadow:0 0 0 4px rgba(167,139,250,.18)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{cursor:pointer;position:relative}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips span{display:inline-block;padding:9px 14px;border-radius:999px;border:1px solid var(--stroke2);font-size:13.5px;color:var(--muted);transition:all .2s;background:rgba(0,0,0,.2)}
+.chips input:checked + span{background:linear-gradient(135deg,rgba(139,92,246,.35),rgba(14,165,233,.25));color:var(--ink);border-color:rgba(167,139,250,.6)}
+.chips input:focus-visible + span{outline:2px solid var(--violet);outline-offset:2px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.form .submit{width:100%;justify-content:center;margin-top:6px;padding:16px}
+.form .fine{font-size:12.5px;color:var(--dim);margin-top:14px;text-align:center}
+.status{margin-top:14px;padding:14px 16px;border-radius:12px;font-size:14.5px;display:none}
+.status.ok{display:block;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.35);color:#BBF7D0}
+.status.err{display:block;background:rgba(251,113,133,.1);border:1px solid rgba(251,113,133,.35);color:#FECDD3}
+.success{display:none;text-align:center;padding:40px 10px}
+.success .check{width:76px;height:76px;margin:0 auto 22px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#22C55E,#14B8A6);box-shadow:0 20px 50px -15px rgba(34,197,94,.7)}
+.success h3{font-size:28px;letter-spacing:-.02em;margin-bottom:10px}
+.success p{color:var(--muted)}
+
+/* cta + footer */
+.final{padding:70px 40px;text-align:center;position:relative;overflow:hidden}
+.final::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 120%,rgba(139,92,246,.45),transparent 70%)}
+.final h2{font-size:clamp(36px,5vw,64px);letter-spacing:-.04em;line-height:1.02;font-weight:800;position:relative}
+.final p{color:var(--muted);font-size:18px;margin:18px auto 30px;max-width:600px;position:relative}
+.final .ctas{display:flex;gap:12px;justify-content:center;position:relative;flex-wrap:wrap}
+footer{padding:60px 0 40px;border-top:1px solid rgba(255,255,255,.06);margin-top:40px}
+footer .cols{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:30px}
+footer h5{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:14px;font-weight:600}
+footer ul{list-style:none;display:grid;gap:9px}
+footer ul a{color:var(--muted);font-size:14.5px}
+footer ul a:hover{color:var(--ink)}
+footer .about{color:var(--muted);font-size:14.5px;max-width:340px;margin-top:14px}
+footer .bottom{margin-top:44px;padding-top:24px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;color:var(--dim);font-size:13px;flex-wrap:wrap;gap:10px}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+/* responsive */
+@media (max-width:1040px){
+  .hero .inner,.steps,.contact{grid-template-columns:1fr}
+  .console{transform:none}
+  .qgrid,.sec{grid-template-columns:repeat(2,1fr)}
+  .bento{grid-template-columns:repeat(2,1fr)}
+  .span-2,.span-3,.span-4{grid-column:span 1}
+  .bento .wide{grid-column:span 2}
+  .arch{grid-template-columns:1fr}
+  .flow{width:2px;height:36px;margin:0 auto;background:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.2))}
+  .flow::after{left:-3px !important;animation:travelY 2.4s linear infinite}
+  .uses,.plans{grid-template-columns:1fr}
+  .code{position:relative;top:0}
+  .app{grid-template-columns:1fr}.side{display:none}
+  .two{grid-template-columns:1fr}
+  .nav ul{display:none}
+  .burger{display:grid;place-items:center}
+  .nav.open ul{display:flex;flex-direction:column;position:absolute;top:70px;left:16px;right:16px;padding:14px;border-radius:18px;background:rgba(10,14,30,.92);border:1px solid var(--stroke);backdrop-filter:blur(20px)}
+}
+@keyframes travelY{from{top:0}to{top:calc(100% - 8px)}}
+@media (max-width:640px){
+  section{padding:80px 0}
+  .hero{padding-top:130px}
+  .qgrid,.sec,.bento,.band,.ladder{grid-template-columns:1fr}
+  .bento .wide{grid-column:span 1}
+  .rung + .rung::before{display:none}
+  .form .row2{grid-template-columns:1fr}
+  .form,.contact .info{padding:26px}
+  .kpis{grid-template-columns:repeat(3,1fr)}
+  .kpi small{font-size:9px;letter-spacing:.06em}
+  .kpi b{font-size:22px}
+  .float-chip{display:none}
+  .nav .cta .btn-ghost{display:none}
+  footer .cols{grid-template-columns:1fr 1fr}
+  .tbl{overflow-x:auto}
+  .k4,.kb,.autos,.agents{grid-template-columns:1fr 1fr}
+  .main{padding:14px}.col{min-height:0}
+  .tbl table{min-width:620px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none !important;transition:none !important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="ambient" aria-hidden="true">
+  <div class="grid"></div>
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="orb o4"></div>
+  <div class="noise"></div>
+</div>
+
+<!-- ================= NAV ================= -->
+<header class="nav" id="nav">
+  <div class="wrapper">
+    <div class="bar">
+      <a href="#top" class="logo" aria-label="NOVA home">
+        <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7DD3FC"/><stop offset=".5" stop-color="#A78BFA"/><stop offset="1" stop-color="#F0ABFC"/></linearGradient></defs><circle cx="32" cy="32" r="22" stroke="url(#lg)" stroke-width="3.5" opacity=".9"/><ellipse cx="32" cy="32" rx="28" ry="10" stroke="url(#lg)" stroke-width="2" opacity=".5" transform="rotate(-25 32 32)"/><circle cx="32" cy="32" r="7" fill="url(#lg)"/><circle cx="55" cy="22" r="3" fill="#5EEAD4"/></svg>
+        NOVA
+      </a>
+      <ul id="menu">
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#platform">Platform</a></li>
+        <li><a href="#product">Product</a></li>
+        <li><a href="#trust">Trust</a></li>
+        <li><a href="#plans">Plans</a></li>
+        <li><a href="#faq">FAQ</a></li>
+      </ul>
+      <div class="cta">
+        <a href="#contact" class="btn btn-ghost">Contact</a>
+        <a href="#contact" class="btn btn-primary" data-interest="demo">Book a demo</a>
+        <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap inner">
+    <div>
+      <span class="pill reveal"><span class="dot"></span><b>Now onboarding</b> design partners for 2027</span>
+      <h1 class="reveal d1">The AI workforce,<br><span class="serif grad-text">governed.</span></h1>
+      <p class="lead reveal d2">NOVA turns an AI agent runtime into something your business can be accountable for. Tenants that can't see each other, policy the runtime itself refuses to break, a write-ahead audit trail, human approval gates, and a Control Center you can hand to a customer.</p>
+      <div class="ctas reveal d3">
+        <a href="#contact" class="btn btn-primary" data-interest="demo">Book a live demo
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
+        <a href="#how" class="btn btn-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4z" fill="currentColor"/></svg>
+          See how it works</a>
+      </div>
+      <div class="proof reveal d4">
+        <div><b data-count="845">0</b>automated tests passing</div>
+        <div><b>0</b>inbound ports in production</div>
+        <div><b data-count="100" data-suffix="%">0</b>of writes audited</div>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal d2">
+      <div class="glass glow-border float-chip c1"><span class="badge b-deny">DENIED</span> <span class="mono">send_wire_transfer</span> blocked by policy</div>
+      <div class="glass console glow-border">
+        <div class="top"><i></i><i></i><i></i><span class="mono">nova · acme-intelligence · control center</span><span class="live"><span class="dot"></span>live</span></div>
+        <div class="body">
+          <div class="kpis">
+            <div class="kpi g"><small>Working now</small><b data-ticker>5</b></div>
+            <div class="kpi a"><small>Needs a human</small><b>1</b></div>
+            <div class="kpi v"><small>Agents</small><b>12</b></div>
+          </div>
+          <div class="feed mono" id="feed" aria-live="off"></div>
+          <div class="approval">
+            <div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></div>
+            <p><b>Refund €2,400 to Rotterdam depot</b><small>support-agent · held via Telegram · awaiting approval</small></p>
+            <button type="button" id="approveBtn">Approve</button>
+          </div>
+        </div>
+      </div>
+      <div class="glass glow-border float-chip c2"><span class="badge b-ok">COMMITTED</span> audit · <span class="mono">corr 7f3a…e21</span></div>
+    </div>
+  </div>
+
+  <div class="marquee">
+    <div class="label">Governs the agents your teams already run, across every channel</div>
+    <div class="track">
+      <span>Telegram</span><span>Slack</span><span>Discord</span><span>WhatsApp</span><span>Signal</span><span>AWS Bedrock</span><span>Amazon EC2</span><span>AWS KMS</span><span>CloudWatch</span><span>Terraform</span><span>Hermes Agent runtime</span><span>Secrets Manager</span>
+      <span>Telegram</span><span>Slack</span><span>Discord</span><span>WhatsApp</span><span>Signal</span><span>AWS Bedrock</span><span>Amazon EC2</span><span>AWS KMS</span><span>CloudWatch</span><span>Terraform</span><span>Hermes Agent runtime</span><span>Secrets Manager</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PROBLEM ================= -->
+<section id="problem">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag">The problem</span>
+      <h2>A capable agent is not a product a company <span class="serif grad-text">can buy.</span></h2>
+      <p>Agents rarely fail to reach production because they aren't smart enough. They stall because nobody can answer four questions with confidence.</p>
+    </div>
+    <div class="qgrid">
+      <div class="glass q reveal"><span class="n mono">01</span><h3>Who may run what?</h3><p>Which agent can call which tool, and who on your team is allowed to change that.</p></div>
+      <div class="glass q reveal d1"><span class="n mono">02</span><h3>On whose data?</h3><p>Customer A's tickets must never be visible to customer B's agents. Not in a view. In the store.</p></div>
+      <div class="glass q reveal d2"><span class="n mono">03</span><h3>With whose approval?</h3><p>A refund, an outbound email, a contract change. Some actions need a human signature first.</p></div>
+      <div class="glass q reveal d3"><span class="n mono">04</span><h3>Can you prove it?</h3><p>When the auditor asks what happened last Tuesday at 14:02, you need a record, not a guess.</p></div>
+    </div>
+    <div class="glass statement reveal">
+      <p>NOVA is the governance layer that answers all four, <b>enforced inside the runtime</b>, not painted on in a dashboard.</p>
+      <a href="#how" class="btn btn-ghost">How it works →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section id="how">
+  <div class="wrap">
+    <div class="head center reveal">
+      <span class="tag">How it works</span>
+      <h2>Declare it once.<br><span class="serif grad-text">The runtime enforces it.</span></h2>
+      <p>NOVA declares, the Hermes Agent runtime executes. Every change follows one path, in one direction, and leaves a record.</p>
+    </div>
+    <div class="steps">
+      <div class="step-list" id="steps">
+        <div class="step active reveal" data-step="0">
+          <div class="num">1</div>
+          <div><h3>Declare your workforce</h3><p>Describe the organization, agents, policy, knowledge, channels and automations as a small bundle of YAML. No secrets live in it, only the names of variables.</p><div class="bar"><i></i></div></div>
+        </div>
+        <div class="step reveal d1" data-step="1">
+          <div class="num">2</div>
+          <div><h3>Validate and plan</h3><p>NOVA checks every reference and permission, then shows exactly what applying would change before anything is written. Like a Terraform plan for your AI team.</p><div class="bar"><i></i></div></div>
+        </div>
+        <div class="step reveal d2" data-step="2">
+          <div class="num">3</div>
+          <div><h3>Compile into the runtime</h3><p>Each agent becomes an isolated runtime profile. Policy compiles into the fail-closed <span class="mono">pre_tool_call</span> hook, so a denied tool is refused inside the agent process.</p><div class="bar"><i></i></div></div>
+        </div>
+        <div class="step reveal d3" data-step="3">
+          <div class="num">4</div>
+          <div><h3>Operate, approve, audit</h3><p>Your team runs it from the Control Center. Sensitive actions wait for a human. Every write records an intent before it acts and a result after.</p><div class="bar"><i></i></div></div>
+        </div>
+      </div>
+
+      <div class="glass code glow-border reveal d2">
+        <div class="top"><b class="mono" id="codeTitle">acme/agents/support.yaml</b><span class="mono">nova 0.1.0</span></div>
+<pre class="mono pane show"><span class="c"># One agent, one file. NOVA compiles it into the runtime.</span>
+<span class="k">id</span>: <span class="s">customer-support</span>
+<span class="k">display_name</span>: <span class="s">Acme Support Assistant</span>
+<span class="k">persona</span>: <span class="s">prompts/support.md</span>
+<span class="k">model</span>:
+  <span class="k">provider</span>: <span class="s">bedrock</span>
+  <span class="k">api_key_env</span>: <span class="s">ACME_BEDROCK_KEY</span>   <span class="c"># a name, never a value</span>
+<span class="k">permissions</span>:
+  <span class="k">allow</span>: [<span class="s">kb.search</span>, <span class="s">tickets.reply</span>, <span class="s">refund.issue</span>]
+  <span class="k">deny</span>:  [<span class="s">payments.wire</span>, <span class="s">shell.exec</span>]
+<span class="k">approvals</span>:
+  <span class="k">refund.issue</span>: <span class="s">required</span>
+  <span class="k">send_external_email</span>: { <span class="k">on_channel</span>: <span class="s">telegram</span> }
+<span class="k">knowledge</span>: [<span class="s">returns-policy</span>, <span class="s">product-catalog</span>]
+<span class="k">channels</span>: [<span class="s">acme-support-telegram</span>]</pre>
+<pre class="mono pane"><span class="p">$</span> nova validate acme
+<span class="o">✓</span> organization   acme-intelligence (tenant <span class="s">northwind</span>)
+<span class="o">✓</span> agents         2 declared · personas resolved
+<span class="o">✓</span> policy         14 actions · permissions ⊆ grants
+<span class="o">✓</span> channels       1 connection · 2 routes
+<span class="o">✓</span> automations    3 schedules valid
+
+<span class="p">$</span> nova plan acme
+  <span class="o">+</span> profile   customer-support
+  <span class="o">+</span> profile   customer-support<span class="c">@telegram</span>   <span class="c"># derived: own policy</span>
+  <span class="w">~</span> gateway   profile_routes (replace wholesale)
+  <span class="w">~</span> cron      weekly-stockout-summary
+  <span class="c">  nothing written yet. 2 to add, 2 to change.</span></pre>
+<pre class="mono pane"><span class="p">$</span> nova apply acme
+  materialised  customer-support          <span class="o">ok</span>
+  materialised  customer-support@telegram <span class="o">ok</span>
+  compiled      pre_tool_call hook        <span class="o">fail-closed</span>
+  <span class="w">!</span> customer-support cannot run yet: ACME_BEDROCK_KEY missing
+
+<span class="c"># inside the agent process, at tool-call time:</span>
+<span class="k">tool</span>   payments.wire(amount=24000, to="NL91…")
+<span class="e">DENY</span>   policy:acme/deny · agent=customer-support
+       <span class="c">the model never gets to execute it.</span></pre>
+<pre class="mono pane"><span class="c">// write-ahead audit · every mutation, two records</span>
+{ <span class="k">"phase"</span>: <span class="s">"intent"</span>,    <span class="k">"actor"</span>: <span class="s">"alice@acme"</span>,
+  <span class="k">"tenant"</span>: <span class="s">"northwind"</span>, <span class="k">"action"</span>: <span class="s">"refund.issue"</span>,
+  <span class="k">"corr"</span>: <span class="s">"7f3a…e21"</span>,    <span class="k">"ts"</span>: <span class="s">"14:02:07.112Z"</span> }
+{ <span class="k">"phase"</span>: <span class="s">"approved"</span>,  <span class="k">"by"</span>: <span class="s">"ops-lead@acme"</span>,
+  <span class="k">"via"</span>: <span class="s">"control-center"</span> }
+{ <span class="k">"phase"</span>: <span class="o">"committed"</span>, <span class="k">"corr"</span>: <span class="s">"7f3a…e21"</span>,
+  <span class="k">"ts"</span>: <span class="s">"14:02:31.904Z"</span> }
+
+<span class="c">// a dangling intent is a detectable crash, not a silent gap.</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PLATFORM / BENTO ================= -->
+<section id="platform">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag">The platform</span>
+      <h2>Everything an enterprise deployment needs. <span class="serif grad-text">Nothing it doesn't.</span></h2>
+      <p>A small, auditable platform layer on top of a runtime that keeps getting better upstream. NOVA governs what the runtime already does instead of rebuilding it.</p>
+    </div>
+    <div class="bento">
+      <div class="glass card span-3 wide reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+        <h3>Real multi-tenancy</h3>
+        <p>Every task, run, event, comment and attachment carries a <code>tenant_id</code>, enforced in SQL at the store. Fair scheduling and per-tenant concurrency caps stop one heavy customer from starving the rest.</p>
+        <div class="tenants">
+          <div class="tenant"><b>northwind</b>4 agents · 212 tasks<div class="lock">🔒 isolated runtime home</div></div>
+          <div class="tenant"><b>globex</b>7 agents · 1,480 tasks<div class="lock">🔒 isolated runtime home</div></div>
+        </div>
+      </div>
+      <div class="glass card span-3 wide reveal d1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>Policy that actually refuses</h3>
+        <p>Permissions compile into the runtime's fail-closed hook. A denied tool is denied inside the agent, not hidden behind a button. Anything that can't be enforced is labelled <em>unenforced</em> instead of quietly claimed.</p>
+        <div class="mini mono">
+          <div class="r"><span>kb.search</span><span class="badge b-ok">ALLOW</span></div>
+          <div class="r"><span>refund.issue</span><span class="badge b-hold">APPROVAL</span></div>
+          <div class="r"><span>payments.wire</span><span class="badge b-deny">DENY</span></div>
+        </div>
+      </div>
+      <div class="glass card span-2 reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 4h12l4 4v12H4z"/><path d="M8 10h8M8 14h8M8 18h5"/></svg></div>
+        <h3>Write-ahead audit</h3>
+        <p>Model-visible means logged. Intent before every action, committed or failed after, with the human actor, tenant and a correlation id.</p>
+      </div>
+      <div class="glass card span-2 reveal d1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M7 11V7a5 5 0 0110 0v4"/><rect x="4" y="11" width="16" height="10" rx="2"/></svg></div>
+        <h3>Human approval gates</h3>
+        <p>Require sign-off globally or only on customer-facing channels. "Needs approval on Telegram" is its own compiled policy, not a flag someone can flip.</p>
+      </div>
+      <div class="glass card span-2 reveal d2">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+        <h3>Governed automations</h3>
+        <p>Scheduled work is a first-class object with an owner, a reason and permissions. It compiles into the runtime's real cron API through NOVA's validator.</p>
+      </div>
+      <div class="glass card span-2 reveal">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <h3>Channels, governed</h3>
+        <p>Telegram, Slack, Discord, WhatsApp and Signal. NOVA owns the routing table and replaces it on every apply, so a revoked connection stops delivering.</p>
+      </div>
+      <div class="glass card span-2 reveal d1">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></div>
+        <h3>White-label Control Center</h3>
+        <p>React 19 under a strict CSP. Your customer's name, colours and support links come from their bundle. Light and dark, WCAG AA, keyboard-first.</p>
+      </div>
+      <div class="glass card span-2 reveal d2">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M17.5 19a4.5 4.5 0 100-9 6 6 0 00-11.6 2A4 4 0 006.5 19z"/></svg></div>
+        <h3>AWS, with IAM derived</h3>
+        <p>Terraform for EC2, EBS, KMS and CloudWatch. Integration roles are generated from the tenant's declaration and assumed with <code>sts:ExternalId</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRODUCT SCREENS ================= -->
+<section id="product">
+  <div class="wrap">
+    <div class="head center reveal">
+      <span class="tag">The Control Center</span>
+      <h2>Hand your customer a cockpit, <span class="serif grad-text">not a terminal.</span></h2>
+      <p>The Control Center is a view onto the runtime, never the source of truth, and it tells you plainly when something has been declared but hasn't run yet.</p>
+    </div>
+    <div class="shots reveal">
+      <div style="text-align:center"><div class="glass tabs" role="tablist" id="shotTabs">
+        <button class="on" role="tab" aria-selected="true" data-shot="0">Overview</button>
+        <button role="tab" aria-selected="false" data-shot="1">Work board</button>
+        <button role="tab" aria-selected="false" data-shot="2">Automations</button>
+      </div></div>
+      <div class="glass frame glow-border">
+        <div class="app">
+          <aside class="side">
+            <div class="org"><span class="av">A</span><div><b>Acme Intelligence</b><small class="mono">northwind</small></div></div>
+            <nav>
+              <a class="on" data-nav="0">◫ Overview</a><a>⚇ Agents <i>2</i></a><a>◎ Objectives</a><a data-nav="1">☰ Work <i>9</i></a>
+              <a>✓ Approvals <i class="am">1</i></a><a>∿ Activity</a><a>▢ Knowledge</a><a>⊞ Channels</a><a data-nav="2">⏲ Automations</a><a>⛨ Policies</a><a>◔ Usage</a>
+            </nav>
+          </aside>
+          <div class="main">
+            <div class="scr show">
+              <div class="mh"><div><b>Overview</b><small>The state of the whole workforce, at a glance.</small></div><span class="rt"><span class="dot"></span>hermes</span></div>
+              <div class="k4">
+                <div><small>Working now</small><b class="gr">5</b><span>items running or ready</span></div>
+                <div><small>Needs a human</small><b class="am">1</b><span>held until someone decides</span></div>
+                <div><small>Agents</small><b>2</b><span>2 in sync with the bundle</span></div>
+                <div><small>Channels live</small><b>1</b><span>of 1 connection</span></div>
+              </div>
+              <div class="two">
+                <div class="pnl"><h5>The workforce</h5><p class="sub">Every agent, what it is doing, and what it may reach.</p>
+                  <div class="agents">
+                    <div class="ag"><div class="agh"><span class="ini">AS</span><div><b>Acme Support Assistant</b><small class="mono">customer-support</small></div></div><span class="badge b-hold">● 1 needs a human</span><p>Verify returns backlog under 48h</p><div class="chs"><span>Telegram</span><span>2 corpora</span></div></div>
+                    <div class="ag"><div class="agh"><span class="ini">AO</span><div><b>Acme Ops</b><small class="mono">operations</small></div></div><span class="badge b-ok">● Working · 3 tasks</span><p>Weekly stock-out summary for depot 3</p><div class="chs"><span>Telegram</span></div></div>
+                  </div>
+                </div>
+                <div class="pnl"><h5>Needs a human</h5><p class="sub">Held until someone decides.</p>
+                  <div class="hold"><b>Escalation: damaged pallet, Rotterdam</b><small class="mono">customer-support · send_external_email</small><div class="acts"><button>Approve</button><button class="gh">Reject</button></div></div>
+                  <div class="plat"><span>Platform</span><b>v0.1.0</b><span>Runtime</span><b>hermes</b><span>Bundle</span><b class="mono">6e2fb0b9a7b2</b></div>
+                </div>
+              </div>
+            </div>
+            <div class="scr">
+              <div class="mh"><div><b>Work</b><small>Every task, tenant-scoped and durable, straight from the runtime.</small></div><span class="rt"><span class="dot"></span>hermes</span></div>
+              <div class="kb">
+                <div class="col"><h6>Ready <i>2</i></h6><div class="tk"><b>Reconcile March invoices</b><small>operations</small></div><div class="tk"><b>Draft supplier follow-ups</b><small>operations</small></div></div>
+                <div class="col"><h6>Running <i>3</i></h6><div class="tk run"><b>Weekly stock-out summary</b><small>operations · 2m</small></div><div class="tk run"><b>Answer ticket #4821</b><small>customer-support · 40s</small></div><div class="tk run"><b>Tag returns by reason</b><small>customer-support · 5m</small></div></div>
+                <div class="col"><h6>Needs a human <i class="am">1</i></h6><div class="tk hum"><b>Escalation: damaged pallet</b><small>approval · send_external_email</small></div></div>
+                <div class="col"><h6>Done <i>3</i></h6><div class="tk dn"><b>Refund policy lookup</b><small>committed · 14:02</small></div><div class="tk dn"><b>Daily KPI digest</b><small>committed · 09:00</small></div><div class="tk dn"><b>Close stale tickets</b><small>committed · 08:30</small></div></div>
+              </div>
+            </div>
+            <div class="scr">
+              <div class="mh"><div><b>Automations</b><small>Scheduled work, declared through NOVA and compiled into the runtime's cron.</small></div><span class="rt"><span class="dot"></span>hermes</span></div>
+              <div class="banner">ⓘ <span><b>Declared.</b> The runtime has recorded no execution of these schedules yet. NOVA will not show a run it hasn't observed.</span></div>
+              <div class="autos">
+                <div class="au"><div class="auh"><b>Weekly stock-out summary</b><span class="badge b-int">DECLARED</span></div><p class="mono">0 8 * * MON · operations</p><div class="chs"><span>inventory.read</span><span>slack.post</span></div><small>Owner alice@acme · reason: depot planning</small></div>
+                <div class="au"><div class="auh"><b>Daily returns backlog check</b><span class="badge b-int">DECLARED</span></div><p class="mono">0 9 * * * · customer-support</p><div class="chs"><span>tickets.read</span><span>kb.search</span></div><small>Owner ops-lead@acme · reason: 48h SLA</small></div>
+                <div class="au"><div class="auh"><b>Month-end invoice reconcile</b><span class="badge b-int">DECLARED</span></div><p class="mono">0 7 1 * * · operations</p><div class="chs"><span>invoices.read</span><span class="ap">approval on send</span></div><small>Owner finance@acme · reason: close books</small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cap" id="shotCap">The whole workforce at a glance: who is working, what is waiting on a human, and which channels are live.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRUST / LADDER ================= -->
+<section id="trust">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag">Radical honesty</span>
+      <h2>We tell you exactly what is enforced. <span class="serif grad-text">And what isn't.</span></h2>
+      <p>Every capability sits on one ladder, and nothing moves up without evidence. A config field is not a control. A dashboard is not a control. Your security team will appreciate the difference.</p>
+    </div>
+    <div class="glass ladder reveal">
+      <div class="rung"><b>Declared</b><small>a field exists</small><div class="bar"></div></div>
+      <div class="rung"><b>Wired</b><small>reaches the runtime</small><div class="bar"></div></div>
+      <div class="rung"><b>Enforced</b><small>runtime refuses</small><div class="bar"></div></div>
+      <div class="rung"><b>Tested</b><small>a test proves it</small><div class="bar"></div></div>
+      <div class="rung"><b>Live-proven</b><small>observed happening</small><div class="bar"></div></div>
+    </div>
+    <div class="glass tbl reveal">
+      <table>
+        <thead><tr><th>Capability</th><th>Status</th><th>How it is enforced</th></tr></thead>
+        <tbody>
+          <tr><td>Tenant isolation of work</td><td><span class="badge b-ok">TESTED</span></td><td>SQL scoping at the store. A cross-tenant read returns nothing.</td></tr>
+          <tr><td>Tool denial</td><td><span class="badge b-ok">TESTED</span></td><td>Compiled into the fail-closed <span class="mono">pre_tool_call</span> hook.</td></tr>
+          <tr><td>Approval gates</td><td><span class="badge b-ok">TESTED</span></td><td>The runtime blocks the task and won't resume without a decision.</td></tr>
+          <tr><td>Per-channel approval</td><td><span class="badge b-ok">TESTED</span></td><td>A derived profile with its own compiled policy.</td></tr>
+          <tr><td>RBAC on the control plane</td><td><span class="badge b-ok">TESTED</span></td><td>Role checked on every route. Writes default to refusal.</td></tr>
+          <tr><td>Audit completeness</td><td><span class="badge b-ok">TESTED</span></td><td>Every write emits intent, then committed or failed.</td></tr>
+          <tr><td>Channel revocation</td><td><span class="badge b-ok">TESTED</span></td><td>Routing table replaced wholesale on every apply.</td></tr>
+          <tr><td>Positive tool scoping</td><td><span class="badge b-hold">DECLARED</span></td><td>Recorded, not yet enforced, and the UI says so.</td></tr>
+          <tr><td>Spend ceilings</td><td><span class="badge b-hold">DECLARED</span></td><td>Run time and token counts are observations, not limits yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="glass honest reveal">
+      <span style="font-size:22px">⚖️</span>
+      <p><b>Why show the yellow rows?</b> It would be easy to ship a "budget" field and let a buyer assume it stops spending. It doesn't yet, so NOVA says it doesn't. That's the standard we hold every feature to.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ARCHITECTURE ================= -->
+<section id="architecture">
+  <div class="wrap">
+    <div class="head center reveal">
+      <span class="tag">Architecture</span>
+      <h2>One path. <span class="serif grad-text">One direction.</span></h2>
+      <p>No browser ever talks to a runtime database. Every change travels through the authenticated, tenant-scoped Control API and lands in the audit log.</p>
+    </div>
+    <div class="glass arch glow-border reveal">
+      <div class="col">
+        <h4>Your declaration</h4>
+        <div class="node cu">📄<div>Tenant bundle<small>org · policy · agents · channels</small></div></div>
+        <div class="node cu">🖥️<div>Control Center<small>a view, never authoritative</small></div></div>
+      </div>
+      <div class="flow"></div>
+      <div class="col">
+        <h4>NOVA control plane</h4>
+        <div class="node nv">✅<div>Validate &amp; compile<small>references · permissions · schedules</small></div></div>
+        <div class="node nv">🔐<div>Control API<small>RBAC · CSRF · bearer tokens</small></div></div>
+        <div class="node nv">📓<div>Write-ahead audit<small>intent → committed / failed</small></div></div>
+      </div>
+      <div class="flow"></div>
+      <div class="col">
+        <h4>Hermes Agent runtime</h4>
+        <div class="node rt">👤<div>Profile per agent<small>own .env, memory, cron</small></div></div>
+        <div class="node rt">⛔<div>pre_tool_call hook<small>fail-closed enforcement</small></div></div>
+        <div class="node rt">🗂️<div>Kanban &amp; cron stores<small>durable, tenant-scoped</small></div></div>
+        <div class="node rt">📡<div>Gateway<small>Telegram · Slack · Discord · more</small></div></div>
+      </div>
+    </div>
+    <p class="rule reveal"><b>NOVA declares. Hermes executes.</b> No fork of the runtime, so you keep every upstream improvement.</p>
+  </div>
+</section>
+
+<!-- ================= SECURITY ================= -->
+<section id="security">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag">Deployed in your cloud</span>
+      <h2>Runs in your AWS account. <span class="serif grad-text">Locked by default.</span></h2>
+      <p>Single-tenant per deployment, provisioned with Terraform in your own account and region. Your data never leaves it.</p>
+    </div>
+    <div class="sec">
+      <div class="glass card reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M18.4 5.6L5.6 18.4"/><circle cx="12" cy="12" r="9"/></svg></div><h3>No ingress rules at all</h3><p>Nothing exposed, no bastion to maintain. Operators reach the host through SSM Session Manager only.</p></div>
+      <div class="glass card reveal d1"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3M16 7l3 3"/></svg></div><h3>KMS everywhere</h3><p>The state volume is KMS-encrypted. Secrets Manager is scoped to a single prefix and nowhere else.</p></div>
+      <div class="glass card reveal d2"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.9M16 3.1a4 4 0 010 7.8"/></svg></div><h3>One IAM role per integration</h3><p>Generated from the declaration, enumerated resources, never wildcards. The list is the complete answer to "what can the agents touch?"</p></div>
+      <div class="glass card reveal d3"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 6v6l4 2"/></svg></div><h3>Enumerated Bedrock models</h3><p>IMDSv2 required, hop limit 1. Model ids are listed explicitly, so "which models can this call?" always has an answer.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= USE CASES ================= -->
+<section id="uses">
+  <div class="wrap">
+    <div class="head center reveal">
+      <span class="tag">Who it's for</span>
+      <h2>Built for teams who answer <span class="serif grad-text">to someone.</span></h2>
+    </div>
+    <div class="uses">
+      <div class="glass use reveal"><div class="emoji">🎧</div><h3>Customer operations</h3><p>Support agents on Telegram and WhatsApp that can issue refunds, but only with a human sign-off above your threshold.</p><ul><li>Per-channel approval rules</li><li>Escalations held for a human</li><li>Full conversation audit</li></ul></div>
+      <div class="glass use reveal d1"><div class="emoji">🏢</div><h3>Agencies &amp; MSPs</h3><p>Run AI workforces for many clients from one platform, with each client white-labelled and fully isolated from the others.</p><ul><li>Tenant isolation in SQL</li><li>Branded Control Center per client</li><li>Fair scheduling across tenants</li></ul></div>
+      <div class="glass use reveal d2"><div class="emoji">🏦</div><h3>Regulated industries</h3><p>Finance, logistics and healthcare teams that need to prove to an auditor exactly what an agent did and who allowed it.</p><ul><li>Write-ahead audit trail</li><li>Deployed in your own AWS</li><li>Honest capability catalogue</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="glass band glow-border reveal">
+      <div><b class="grad-text" data-count="845">0</b><span>automated tests passing</span></div>
+      <div><b class="grad-text" data-count="49">0</b><span>local release checks before AWS</span></div>
+      <div><b class="grad-text" data-count="304" data-suffix=" MB">0</b><span>production image, no apt layer</span></div>
+      <div><b class="grad-text" data-count="2">0</b><span>platform dependencies (stdlib + PyYAML)</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PLANS ================= -->
+<section id="plans">
+  <div class="wrap">
+    <div class="head center reveal">
+      <span class="tag">Ways to work with us</span>
+      <h2>Start small. <span class="serif grad-text">Scale with proof.</span></h2>
+      <p>Every engagement starts with a live demo on your own use case.</p>
+    </div>
+    <div class="plans">
+      <div class="glass plan reveal">
+        <span class="tier">Pilot</span><h3>Proof of value</h3><p>One team, one workflow, governed end to end in 30 days.</p>
+        <ul><li>Up to 3 governed agents</li><li>1 messaging channel</li><li>Approval gates &amp; audit trail</li><li>Hosted Control Center</li></ul>
+        <a href="#contact" class="btn btn-ghost" data-interest="pilot">Start a pilot</a>
+      </div>
+      <div class="glass plan hot glow-border reveal d1" style="position:relative">
+        <span class="ribbon">MOST POPULAR</span>
+        <span class="tier">Business</span><h3>Production</h3><p>Deployed in your AWS account with your branding and your policies.</p>
+        <ul><li>Unlimited agents &amp; automations</li><li>All channels incl. WhatsApp &amp; Signal</li><li>Terraform deployment in your cloud</li><li>White-label Control Center</li><li>Priority engineering support</li></ul>
+        <a href="#contact" class="btn btn-primary" data-interest="demo">Book a demo</a>
+      </div>
+      <div class="glass plan reveal d2">
+        <span class="tier">Partner</span><h3>Platform &amp; MSP</h3><p>Run governed AI workforces for your own customers.</p>
+        <ul><li>Multi-tenant control plane</li><li>Per-client branding</li><li>Reseller pricing</li><li>Joint go-to-market</li></ul>
+        <a href="#contact" class="btn btn-ghost" data-interest="partner">Become a partner</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="faq">
+  <div class="wrap">
+    <div class="head center reveal"><span class="tag">FAQ</span><h2>Questions, <span class="serif grad-text">answered.</span></h2></div>
+    <div class="faq">
+      <details class="glass reveal"><summary>Is NOVA another agent framework?</summary><p>No. NOVA is a governance and control layer on top of the Hermes Agent runtime. It doesn't replace the runtime, the scheduler or the task engine. It compiles your declarations into the runtime's own configuration and enforcement hooks, so you keep every upstream improvement.</p></details>
+      <details class="glass reveal"><summary>Where does my data live?</summary><p>In your own AWS account and region. NOVA is deployed with Terraform onto an EC2 instance with a KMS-encrypted volume, no inbound ports, and access through SSM Session Manager only. NOVA never writes or reads the values of your credentials, only the names of the variables that hold them.</p></details>
+      <details class="glass reveal"><summary>Which models and channels are supported?</summary><p>Models are reached through the runtime's providers, including Amazon Bedrock with explicitly enumerated model ids. Channels include Telegram, Slack, Discord, WhatsApp and Signal, routed by the runtime's own gateway and governed by NOVA's routing table.</p></details>
+      <details class="glass reveal"><summary>How do approvals work in practice?</summary><p>You mark a business action, such as issuing a refund or sending an external email, as requiring approval, either everywhere or only on specific channels. When an agent attempts it, the runtime blocks the task until someone with the right role approves or rejects it in the Control Center. Both the request and the decision are audited.</p></details>
+      <details class="glass reveal"><summary>Can I white-label it for my clients?</summary><p>Yes. Product name, colours and support links come from each tenant's bundle and are compiled into the Control Center, so every client sees their own brand.</p></details>
+      <details class="glass reveal"><summary>How long does a deployment take?</summary><p>A pilot on one workflow typically runs in about 30 days. The deployment itself is a validated Terraform apply; most of the time goes into agreeing the policy and approvals with your team.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact">
+  <div class="wrap contact">
+    <div class="glass info glow-border reveal">
+      <span class="tag" style="position:relative">Book a demo</span>
+      <h2 style="position:relative">See your own workflow, <span class="serif grad-text">governed.</span></h2>
+      <p style="position:relative">Tell us a little about your team. We'll come back within one business day with a time for a 30-minute live session.</p>
+      <div class="agenda" style="position:relative">
+        <div><span>1</span><p>Your use case, mapped<small>We sketch your agents, actions and approvals as a NOVA bundle.</small></p></div>
+        <div><span>2</span><p>A live run in the Control Center<small>Watch a denied tool, an approval gate and the audit trail in real time.</small></p></div>
+        <div><span>3</span><p>A deployment plan for your cloud<small>What it takes to run it in your AWS account, and how long.</small></p></div>
+      </div>
+      <div class="meta"><span>⏱ Reply within 1 business day</span><span>🔒 No spam, ever</span></div>
+    </div>
+
+    <div class="glass form reveal d1">
+      <form id="leadForm" novalidate>
+        <div class="field">
+          <label>I'm interested in</label>
+          <div class="chips">
+            <label><input type="radio" name="interest" value="demo" checked><span>Live demo</span></label>
+            <label><input type="radio" name="interest" value="pilot"><span>A pilot</span></label>
+            <label><input type="radio" name="interest" value="partner"><span>Partnership</span></label>
+            <label><input type="radio" name="interest" value="other"><span>Something else</span></label>
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="f-name">Full name *</label><input id="f-name" name="name" autocomplete="name" required maxlength="120" placeholder="Ada Lovelace"></div>
+          <div class="field"><label for="f-email">Work email *</label><input id="f-email" name="email" type="email" autocomplete="email" required maxlength="200" placeholder="ada@company.com"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label for="f-company">Company *</label><input id="f-company" name="company" autocomplete="organization" required maxlength="160" placeholder="Acme Inc."></div>
+          <div class="field"><label for="f-role">Role</label><input id="f-role" name="role" autocomplete="organization-title" maxlength="120" placeholder="Head of Operations"></div>
+        </div>
+        <div class="field">
+          <label for="f-size">Team size</label>
+          <select id="f-size" name="size">
+            <option value="">Select…</option><option>1–10</option><option>11–50</option><option>51–200</option><option>201–1,000</option><option>1,000+</option>
+          </select>
+        </div>
+        <div class="field"><label for="f-msg">What would you like your agents to do?</label><textarea id="f-msg" name="message" maxlength="4000" placeholder="e.g. Handle tier-1 support on WhatsApp and issue refunds under €500 without approval."></textarea></div>
+        <div class="hp" aria-hidden="true"><label>Website <input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <button class="btn btn-primary submit" type="submit" id="submitBtn">Request my demo
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
+        <div class="status" id="status" role="status"></div>
+        <p class="fine">By submitting you agree to be contacted about NOVA. We never share your details.</p>
+      </form>
+      <div class="success" id="success">
+        <div class="check"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 12l5 5L20 7"/></svg></div>
+        <h3>You're on the list.</h3>
+        <p>Thanks, <span id="sName">there</span>. We'll be in touch within one business day to set up your demo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL CTA ================= -->
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="glass final glow-border reveal">
+      <h2>Put AI to work.<br><span class="serif grad-text">Keep it accountable.</span></h2>
+      <p>Join the teams deploying agents their security, legal and compliance teams can actually sign off on.</p>
+      <div class="ctas"><a href="#contact" class="btn btn-primary" data-interest="demo">Book a demo</a><a href="#how" class="btn btn-ghost">Explore the platform</a></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a href="#top" class="logo"><svg viewBox="0 0 64 64" fill="none" aria-hidden="true" style="width:28px;height:28px"><circle cx="32" cy="32" r="22" stroke="url(#lg)" stroke-width="3.5"/><circle cx="32" cy="32" r="7" fill="url(#lg)"/></svg>NOVA</a>
+        <p class="about">The governance layer for AI workforces. Tenants, policy, audit and approvals, enforced inside the runtime.</p>
+      </div>
+      <div><h5>Product</h5><ul><li><a href="#how">How it works</a></li><li><a href="#platform">Platform</a></li><li><a href="#product">Control Center</a></li><li><a href="#plans">Plans</a></li></ul></div>
+      <div><h5>Trust</h5><ul><li><a href="#trust">What's enforced</a></li><li><a href="#security">Security</a></li><li><a href="#architecture">Architecture</a></li></ul></div>
+      <div><h5>Company</h5><ul><li><a href="#contact">Contact sales</a></li><li><a href="#contact">Book a demo</a></li><li><a href="#contact" data-interest="partner">Partners</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+    </div>
+    <div class="bottom"><span>© <span id="yr">2026</span> NOVA. All rights reserved.</span><span>Built on the Hermes Agent runtime · Deployed on AWS</span></div>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  $('#yr').textContent = new Date().getFullYear();
+
+  // nav
+  const nav = $('#nav');
+  const onScroll = () => nav.classList.toggle('scrolled', scrollY > 20);
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+  $('#burger').addEventListener('click', e => {
+    const open = nav.classList.toggle('open');
+    e.currentTarget.setAttribute('aria-expanded', open);
+  });
+  $$('#menu a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
+
+  // reveal + counters
+  const countUp = el => {
+    const target = +el.dataset.count, suffix = el.dataset.suffix || '', t0 = performance.now(), dur = 1600;
+    const step = now => {
+      const p = Math.min(1, (now - t0) / dur), v = Math.round(target * (1 - Math.pow(1 - p, 3)));
+      el.textContent = v.toLocaleString() + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  const io = new IntersectionObserver(entries => entries.forEach(en => {
+    if (!en.isIntersecting) return;
+    en.target.classList.add('in');
+    $$('[data-count]', en.target).forEach(c => { if (!c.dataset.done) { c.dataset.done = 1; countUp(c); } });
+    if (en.target.dataset.count && !en.target.dataset.done) { en.target.dataset.done = 1; countUp(en.target); }
+    io.unobserve(en.target);
+  }), { threshold: .12 });
+  $$('.reveal, [data-count]').forEach(el => io.observe(el));
+
+  // spotlight on cards
+  $$('.card').forEach(c => c.addEventListener('pointermove', e => {
+    const r = c.getBoundingClientRect();
+    c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  }));
+
+  // live feed
+  const events = [
+    ['b-int', 'INTENT', '<em>support</em> kb.search "returns NL"'],
+    ['b-ok', 'ALLOW', '<em>support</em> tickets.reply #4821'],
+    ['b-deny', 'DENY', '<em>support</em> payments.wire · policy'],
+    ['b-hold', 'HOLD', '<em>support</em> refund.issue €2,400'],
+    ['b-ok', 'COMMIT', '<em>ops</em> cron weekly-stockout ran'],
+    ['b-int', 'INTENT', '<em>ops</em> inventory.read depot-3'],
+    ['b-ok', 'ALLOW', '<em>ops</em> slack.post #logistics'],
+    ['b-deny', 'DENY', '<em>sales</em> shell.exec · not granted'],
+    ['b-ok', 'COMMIT', '<em>alice@acme</em> automation.update'],
+    ['b-int', 'INTENT', '<em>sales</em> crm.update lead 1192'],
+  ];
+  const feed = $('#feed'); let i = 0;
+  const stamp = () => new Date().toTimeString().slice(0, 8);
+  const push = () => {
+    const [cls, label, msg] = events[i++ % events.length];
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.innerHTML = '<span class="t">' + stamp() + '</span><span class="badge ' + cls + '">' + label + '</span><span class="msg">' + msg + '</span>';
+    feed.prepend(row);
+    while (feed.children.length > 8) feed.lastChild.remove();
+  };
+  for (let k = 0; k < 6; k++) push();
+  setInterval(push, 2200);
+  const tick = $('[data-ticker]');
+  setInterval(() => { tick.textContent = 4 + Math.floor(Math.random() * 4); }, 3100);
+  $('#approveBtn').addEventListener('click', e => {
+    const b = e.currentTarget;
+    b.textContent = 'Approved ✓'; b.style.background = '#4ADE80';
+    const row = document.createElement('div'); row.className = 'row';
+    row.innerHTML = '<span class="t">' + stamp() + '</span><span class="badge b-ok">COMMIT</span><span class="msg"><em>you</em> approved refund.issue</span>';
+    feed.prepend(row);
+    setTimeout(() => { b.textContent = 'Approve'; b.style.background = ''; }, 3500);
+  });
+
+  // steps
+  const steps = $$('.step'), panes = $$('.code .pane');
+  const titles = ['acme/agents/support.yaml', 'terminal · validate & plan', 'terminal · apply & enforce', 'audit/events.jsonl'];
+  let cur = 0, timer;
+  const show = n => {
+    cur = n;
+    steps.forEach((s, k) => s.classList.toggle('active', k === n));
+    panes.forEach((p, k) => p.classList.toggle('show', k === n));
+    $('#codeTitle').textContent = titles[n];
+    clearTimeout(timer); timer = setTimeout(() => show((cur + 1) % steps.length), 6000);
+  };
+  steps.forEach((s, k) => s.addEventListener('click', () => show(k)));
+  show(0);
+
+  // control center mockup
+  const caps = [
+    'The whole workforce at a glance: who is working, what is waiting on a human, and which channels are live.',
+    'The work board: every task, tenant-scoped and durable, with its state straight from the runtime.',
+    'Governed automations. The banner tells you nothing has executed yet, instead of letting the cards imply it.',
+  ];
+  const showShot = n => {
+    $$('#shotTabs button').forEach((x, k) => { x.classList.toggle('on', k === n); x.setAttribute('aria-selected', k === n); });
+    $$('.app .scr').forEach((x, k) => x.classList.toggle('show', k === n));
+    $$('.side a[data-nav]').forEach(a => a.classList.toggle('on', +a.dataset.nav === n));
+    $('#shotCap').textContent = caps[n];
+  };
+  $$('#shotTabs button').forEach(b => b.addEventListener('click', () => showShot(+b.dataset.shot)));
+  $$('.side a[data-nav]').forEach(a => a.addEventListener('click', () => showShot(+a.dataset.nav)));
+
+  // CTA buttons preselect interest
+  $$('[data-interest]').forEach(a => a.addEventListener('click', () => {
+    const r = $('input[name=interest][value=' + a.dataset.interest + ']'); if (r) r.checked = true;
+  }));
+
+  // form
+  const form = $('#leadForm'), status = $('#status'), btn = $('#submitBtn');
+  const showErr = msg => { status.className = 'status err'; status.textContent = msg; };
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    if (!data.name?.trim() || !data.company?.trim()) return showErr('Please add your name and company.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email || '')) return showErr('Please enter a valid work email.');
+    btn.disabled = true; btn.style.opacity = .7; btn.firstChild.textContent = 'Sending… ';
+    status.className = 'status';
+    try {
+      const res = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok || !out.ok) throw new Error(out.error || 'Something went wrong. Please try again.');
+      $('#sName').textContent = data.name.trim().split(' ')[0];
+      form.style.display = 'none'; $('#success').style.display = 'block';
+    } catch (err) {
+      showErr(err.message);
+    } finally {
+      btn.disabled = false; btn.style.opacity = 1; btn.firstChild.textContent = 'Request my demo ';
+    }
+  });
+})();
+</script>
+</body>
+</html>

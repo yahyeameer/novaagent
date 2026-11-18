@@ -1,0 +1,13 @@
+name = "nova-landing"
+main = "src/worker.js"
+compatibility_date = "2026-11-01"
+workers_dev = true
+
+rules = [
+  { type = "Text", globs = ["**/*.html"], fallthrough = true },
+]
+
+# Contact and demo requests. Create with: npx wrangler kv namespace create LEADS
+[[kv_namespaces]]
+binding = "LEADS"
+id = "10a1235347474c6cae05c63796f95c51"
